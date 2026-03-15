@@ -36,6 +36,24 @@ The backend logic lives entirely on-chain on Starknet Sepolia.
 
 ---
 
+## 🪙 Funding your Wallet (Starknet Sepolia)
+
+Because ZapLend is currently deployed on the **Starknet Sepolia Testnet**, you will need testnet STRK tokens to interact with it, create loan requests, and vouch for friends.
+
+1. **Connect your Wallet**: Click "Connect Wallet" on the ZapLend frontend to create/login to your Cartridge Controller session.
+2. **Copy your Address**: Once connected, your wallet address will appear in the top right. Copy it.
+3. **Get Free Testnet Tokens**:
+   - Go to the [Starknet Sepolia Faucet](https://faucet.starknet.io/) (or the STRK specific Sepolia faucet).
+   - Paste your copied Cartridge address.
+   - Request STRK tokens. They will arrive in your wallet within a few minutes.
+
+### Viewing your Cartridge Wallet directly
+The ZapLend frontend is just a window into your wallet. If you want to see your actual raw token balances, your recent transactions, or manage your passkeys, you can visit the Cartridge Controller dashboard directly:
+- **Go to [controller.cartridge.gg](https://controller.cartridge.gg/)**
+- Your wallet address, STRK balance, and transaction history will be perfectly synced with the ZapLend UI.
+
+---
+
 ## 🔄 Detailed Walkthrough: The Loan Flow
 
 Let's trace exactly what happens behind the scenes when Alice wants to borrow STRK and her friend Bob vouches for her.

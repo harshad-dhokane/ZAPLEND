@@ -97,13 +97,22 @@ export default function HelpPage() {
             <p className="text-xl font-bold text-black max-w-2xl leading-relaxed">
               Everything you need to know about borrowing, lending, vouching, and earning on ZapLend.
             </p>
-            <div className="flex items-center gap-2 mt-4">
-              <span className="px-3 py-1 text-xs font-bold bg-white border-2 border-black text-black uppercase">
+            <div className="flex flex-wrap items-center gap-3 mt-4">
+              <span className="px-3 py-1.5 text-xs font-bold bg-white border-2 border-black text-black uppercase shadow-[2px_2px_0px_#000]">
                 ⚡ Powered by Starkzap SDK
               </span>
-              <span className="px-3 py-1 text-xs font-bold bg-black border-2 border-black text-white uppercase">
+              <span className="px-3 py-1.5 text-xs font-bold bg-black border-2 border-black text-white uppercase shadow-[2px_2px_0px_#000]">
                 Starknet Sepolia
               </span>
+              <a
+                href="https://faucet.starknet.io/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-[#F72585] text-white border-2 border-black uppercase shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 transition-all"
+              >
+                <Coins className="w-3.5 h-3.5" />
+                Get Testnet Funds
+              </a>
             </div>
           </div>
         </div>
