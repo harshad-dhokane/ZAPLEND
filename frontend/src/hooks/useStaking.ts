@@ -52,7 +52,7 @@ export function useStakingActions() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const stake = useCallback(async (poolAddress: string, amount: string) => {
+  const stake = useCallback(async (poolAddress: string, amount: string, tokenDecimals: number = 18) => {
     if (!wallet) {
       setError('Wallet not connected');
       return null;
@@ -68,9 +68,10 @@ export function useStakingActions() {
     });
 
     try {
-      const { Amount, sepoliaTokens } = await import('starkzap');
-      const STRK = sepoliaTokens.STRK;
-      const parsedAmount = Amount.parse(amount, STRK);
+      const { Amount } = await import('starkzap');
+      // Use decimals-only parsing to avoid token symbol/decimal mismatch
+      // when the pool's token differs from the hardcoded STRK preset
+      const parsedAmount = Amount.parse(amount, tokenDecimals);
 
       // Use wallet.stake() — smart method that auto-detects enter vs add
       const tx = await (wallet as any).stake(poolAddress, parsedAmount);
@@ -146,7 +147,7 @@ export function useStakingActions() {
     }
   }, [wallet, showToast, updateToast, queryClient]);
 
-  const exitPoolIntent = useCallback(async (poolAddress: string, amount: string) => {
+  const exitPoolIntent = useCallback(async (poolAddress: string, amount: string, tokenDecimals: number = 18) => {
     if (!wallet) {
       setError('Wallet not connected');
       return null;
@@ -162,9 +163,9 @@ export function useStakingActions() {
     });
 
     try {
-      const { Amount, sepoliaTokens } = await import('starkzap');
-      const STRK = sepoliaTokens.STRK;
-      const parsedAmount = Amount.parse(amount, STRK);
+      const { Amount } = await import('starkzap');
+      // Use decimals-only parsing to avoid token mismatch
+      const parsedAmount = Amount.parse(amount, tokenDecimals);
 
       const tx = await (wallet as any).exitPoolIntent(poolAddress, parsedAmount);
       await tx.wait();

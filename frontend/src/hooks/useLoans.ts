@@ -18,45 +18,56 @@ async function fetchLoansFromContract(): Promise<LoanData[]> {
 
   const loans: LoanData[] = [];
 
-  // Fetch each loan
-  for (let i = 1; i <= totalLoans; i++) {
-    try {
-      // Call get_loan with loan_id as u256 (low, high)
-      const result = await callContract(LOAN_CONTRACT_ADDRESS, 'get_loan', [i.toString(), '0']);
+  // Fetch loans in parallel batches of 5 to avoid overwhelming the RPC
+  const BATCH_SIZE = 5;
+  for (let batchStart = 1; batchStart <= totalLoans; batchStart += BATCH_SIZE) {
+    const batchEnd = Math.min(batchStart + BATCH_SIZE - 1, totalLoans);
+    const batchPromises = [];
 
-      // Parse the returned struct fields
-      // Struct order: borrower, amount(u256), collateral(u256), social_target(u256),
-      //              social_current(u256), interest_rate(u256), duration(u64), start_time(u64),
-      //              status(u8), repaid_amount(u256)
-      let idx = 0;
-      const borrower = result[idx++];
-      const amount = u256ToBigInt(result[idx++], result[idx++]);
-      const collateral = u256ToBigInt(result[idx++], result[idx++]);
-      const socialTarget = u256ToBigInt(result[idx++], result[idx++]);
-      const socialCurrent = u256ToBigInt(result[idx++], result[idx++]);
-      const interestRate = Number(u256ToBigInt(result[idx++], result[idx++]));
-      const duration = Number(BigInt(result[idx++]));
-      const startTime = Number(BigInt(result[idx++]));
-      const statusIndex = Number(BigInt(result[idx++]));
-      const repaidAmount = u256ToBigInt(result[idx++], result[idx++]);
+    for (let i = batchStart; i <= batchEnd; i++) {
+      batchPromises.push(
+        (async (loanId: number) => {
+          try {
+            const result = await callContract(LOAN_CONTRACT_ADDRESS, 'get_loan', [loanId.toString(), '0']);
 
-      const borrowerHex = '0x' + BigInt(borrower).toString(16).padStart(64, '0');
+            let idx = 0;
+            const borrower = result[idx++];
+            const amount = u256ToBigInt(result[idx++], result[idx++]);
+            const collateral = u256ToBigInt(result[idx++], result[idx++]);
+            const socialTarget = u256ToBigInt(result[idx++], result[idx++]);
+            const socialCurrent = u256ToBigInt(result[idx++], result[idx++]);
+            const interestRate = Number(u256ToBigInt(result[idx++], result[idx++]));
+            const duration = Number(BigInt(result[idx++]));
+            const startTime = Number(BigInt(result[idx++]));
+            const statusIndex = Number(BigInt(result[idx++]));
+            const repaidAmount = u256ToBigInt(result[idx++], result[idx++]);
 
-      loans.push({
-        id: i.toString(),
-        borrower: borrowerHex,
-        amount: formatStrk(amount),
-        collateral: formatStrk(collateral),
-        socialCollateralTarget: formatStrk(socialTarget),
-        socialCollateralCurrent: formatStrk(socialCurrent),
-        interestRate: interestRate / 100, // basis points to percentage
-        duration: Math.floor(duration / 86400), // seconds to days
-        startTime,
-        status: LOAN_STATUS_MAP[statusIndex] || 'Pending',
-        repaidAmount: formatStrk(repaidAmount),
-      });
-    } catch (err) {
-      console.error(`Failed to fetch loan ${i}:`, err);
+            const borrowerHex = '0x' + BigInt(borrower).toString(16).padStart(64, '0');
+
+            return {
+              id: loanId.toString(),
+              borrower: borrowerHex,
+              amount: formatStrk(amount),
+              collateral: formatStrk(collateral),
+              socialCollateralTarget: formatStrk(socialTarget),
+              socialCollateralCurrent: formatStrk(socialCurrent),
+              interestRate: interestRate / 100,
+              duration: Math.floor(duration / 86400),
+              startTime,
+              status: LOAN_STATUS_MAP[statusIndex] || 'Pending',
+              repaidAmount: formatStrk(repaidAmount),
+            } as LoanData;
+          } catch (err) {
+            console.error(`Failed to fetch loan ${loanId}:`, err);
+            return null;
+          }
+        })(i)
+      );
+    }
+
+    const batchResults = await Promise.all(batchPromises);
+    for (const loan of batchResults) {
+      if (loan) loans.push(loan);
     }
   }
 

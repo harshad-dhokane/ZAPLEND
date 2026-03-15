@@ -4,8 +4,8 @@ import { RpcProvider, CallData, cairo, shortString } from 'starknet';
 const NETWORK = process.env.NEXT_PUBLIC_STARKZAP_NETWORK || 'sepolia';
 
 const RPC_URLS: Record<string, string> = {
-  sepolia: 'https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/demo',
-  mainnet: 'https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/demo',
+  sepolia: 'https://starknet-sepolia.public.blastapi.io/rpc/v0_7',
+  mainnet: 'https://starknet-mainnet.public.blastapi.io/rpc/v0_7',
 };
 
 // Contract addresses from environment

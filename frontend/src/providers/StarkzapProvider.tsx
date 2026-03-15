@@ -68,6 +68,24 @@ export function StarkzapProvider({ children }: { children: ReactNode }) {
         { target: STRK_TOKEN, method: 'transfer' },
       );
 
+      // Staking contract policies — the Starknet staking contract on Sepolia
+      // This allows wallet.stake(), exitPoolIntent(), exitPool(), claimPoolRewards()
+      const STAKING_CONTRACT = '0x03745ab04a431fc02871a139be6e4a1e3583b3526dd0abcbce492735a30bce5e';
+      policies.push(
+        { target: STAKING_CONTRACT, method: 'enter_delegation_pool' },
+        { target: STAKING_CONTRACT, method: 'add_to_delegation_pool' },
+        { target: STAKING_CONTRACT, method: 'exit_delegation_pool_intent' },
+        { target: STAKING_CONTRACT, method: 'exit_delegation_pool_action' },
+        { target: STAKING_CONTRACT, method: 'claim_rewards' },
+        // STRK approve for staking contract
+        {
+          target: STRK_TOKEN,
+          method: 'approve',
+          spender: STAKING_CONTRACT,
+          amount: '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
+        },
+      );
+
       const result = await sdk.onboard({
         strategy: OnboardStrategy.Cartridge,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

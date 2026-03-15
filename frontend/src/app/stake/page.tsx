@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { useStarkzap } from '@/providers/StarkzapProvider';
 import { useStakingPosition, useStakingActions } from '@/hooks/useStaking';
 import { useBalance } from '@/hooks/useBalance';
 import {
   Coins, TrendingUp, Shield, Loader2, Zap, Gift, ArrowDownToLine,
-  ArrowUpFromLine, CheckCircle2, Clock, AlertTriangle,
+  ArrowUpFromLine, CheckCircle2, Clock, AlertTriangle, X,
 } from 'lucide-react';
 
 interface ValidatorInfo {
@@ -25,7 +25,7 @@ interface StakingToken {
 interface StakingPool {
   poolAddress: string;
   poolContract: string;
-  token: { symbol: string; name: string };
+  token: { symbol: string; name: string; decimals: number };
   stakedAmount: string;
   validatorName?: string;
 }
@@ -34,21 +34,29 @@ export default function StakePage() {
   const { isConnected, wallet } = useStarkzap();
   const { data: balanceData } = useBalance();
   const [stakingTokens, setStakingTokens] = useState<StakingToken[]>([]);
-  const [pools, setPools] = useState<StakingPool[]>([]);
   const [isLoadingTokens, setIsLoadingTokens] = useState(true);
-  const [isLoadingPools, setIsLoadingPools] = useState(false);
-  const [selectedValidator, setSelectedValidator] = useState('');
-  const [poolError, setPoolError] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [sdkInstance, setSdkInstance] = useState<any>(null);
 
+  // Validator modal state
+  const [showValidatorModal, setShowValidatorModal] = useState(false);
+  const [selectedValidator, setSelectedValidator] = useState<ValidatorInfo | null>(null);
+  const [validatorPools, setValidatorPools] = useState<StakingPool[]>([]);
+  const [isLoadingPools, setIsLoadingPools] = useState(false);
+  const [poolError, setPoolError] = useState<string | null>(null);
+
   // Active pool for staking actions
   const [activePool, setActivePool] = useState<string | null>(null);
+  const [activePoolDecimals, setActivePoolDecimals] = useState<number>(18);
   const [stakeAmount, setStakeAmount] = useState('');
   const [unstakeAmount, setUnstakeAmount] = useState('');
   const [showStakeModal, setShowStakeModal] = useState(false);
   const [showUnstakeModal, setShowUnstakeModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'pools' | 'position'>('pools');
+
+  // Inline staking within the validator popup
+  const [inlineStakePool, setInlineStakePool] = useState<StakingPool | null>(null);
+  const [inlineStakeAmount, setInlineStakeAmount] = useState('');
 
   // Validators loaded from SDK presets
   const [validators, setValidators] = useState<ValidatorInfo[]>([]);
@@ -75,6 +83,7 @@ export default function StakePage() {
             : starkzapModule.sepoliaValidators;
 
           if (presets) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const validatorList: ValidatorInfo[] = Object.values(presets).map((v: any) => ({
               name: v.name || 'Unknown',
               stakerAddress: v.stakerAddress || v.address || '',
@@ -112,23 +121,31 @@ export default function StakePage() {
     loadStakingData();
   }, []);
 
-  // Load pools for selected validator
-  const loadPools = async (validatorAddress: string) => {
+  // Open the validator modal and load pools
+  const openValidatorModal = useCallback(async (validator: ValidatorInfo) => {
+    setSelectedValidator(validator);
+    setShowValidatorModal(true);
+    setValidatorPools([]);
+    setPoolError(null);
+    setInlineStakePool(null);
+    setInlineStakeAmount('');
+
     if (!sdkInstance) return;
     setIsLoadingPools(true);
-    setSelectedValidator(validatorAddress);
-    setPoolError(null);
 
     try {
-      const stakerPools = await sdkInstance.getStakerPools(validatorAddress);
-      const validatorName = validators.find(v => v.stakerAddress === validatorAddress)?.name;
+      const stakerPools = await sdkInstance.getStakerPools(validator.stakerAddress);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setPools(stakerPools.map((p: any) => ({
+      setValidatorPools(stakerPools.map((p: any) => ({
         poolAddress: p.poolAddress || p.address || '',
         poolContract: p.poolContract || p.poolAddress || p.address || '',
-        token: { symbol: p.token?.symbol || 'STRK', name: p.token?.name || 'Token' },
+        token: {
+          symbol: p.token?.symbol || 'STRK',
+          name: p.token?.name || 'Token',
+          decimals: p.token?.decimals || 18,
+        },
         stakedAmount: p.amount?.toFormatted?.() || p.stakedAmount || '0',
-        validatorName,
+        validatorName: validator.name,
       })));
     } catch (err) {
       console.error('Failed to load validator pools:', err);
@@ -138,15 +155,33 @@ export default function StakePage() {
       } else {
         setPoolError('Failed to load pools. Please try another validator.');
       }
-      setPools([]);
+      setValidatorPools([]);
     } finally {
       setIsLoadingPools(false);
     }
+  }, [sdkInstance]);
+
+  // Handle inline staking from within the validator popup
+  const handleInlineStake = async () => {
+    if (!inlineStakePool || !inlineStakeAmount || parseFloat(inlineStakeAmount) <= 0) return;
+    const result = await stake(
+      inlineStakePool.poolContract,
+      inlineStakeAmount,
+      inlineStakePool.token.decimals,
+    );
+    if (result) {
+      setInlineStakeAmount('');
+      setInlineStakePool(null);
+      setActivePool(inlineStakePool.poolContract);
+      setActivePoolDecimals(inlineStakePool.token.decimals);
+      setShowValidatorModal(false);
+    }
   };
 
+  // Handle staking from My Position tab
   const handleStake = async () => {
     if (!activePool || !stakeAmount || parseFloat(stakeAmount) <= 0) return;
-    const result = await stake(activePool, stakeAmount);
+    const result = await stake(activePool, stakeAmount, activePoolDecimals);
     if (result) {
       setStakeAmount('');
       setShowStakeModal(false);
@@ -160,7 +195,7 @@ export default function StakePage() {
 
   const handleExitIntent = async () => {
     if (!activePool || !unstakeAmount || parseFloat(unstakeAmount) <= 0) return;
-    const result = await exitPoolIntent(activePool, unstakeAmount);
+    const result = await exitPoolIntent(activePool, unstakeAmount, activePoolDecimals);
     if (result) {
       setUnstakeAmount('');
       setShowUnstakeModal(false);
@@ -170,11 +205,6 @@ export default function StakePage() {
   const handleExitPool = async () => {
     if (!activePool) return;
     await exitPool(activePool);
-  };
-
-  const openStakeForPool = (poolContract: string) => {
-    setActivePool(poolContract);
-    setShowStakeModal(true);
   };
 
   return (
@@ -264,13 +294,13 @@ export default function StakePage() {
               )}
             </div>
 
-            {/* Validator Pools */}
+            {/* Validator Cards — Click to open popup */}
             <div className="mb-10 animate-fade-in-up animate-delay-200">
               <h2 className="text-xl font-black text-black uppercase mb-4 flex items-center gap-2">
                 <Shield className="w-5 h-5" /> Validator Pools
               </h2>
               <p className="text-sm font-bold text-black mb-4">
-                Select a validator to explore their active delegation pools. Then stake directly!
+                Click any validator to view pools and stake directly.
               </p>
 
               {validators.length === 0 && !isLoadingTokens && (
@@ -279,93 +309,42 @@ export default function StakePage() {
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {validators.map((validator, vidx) => {
                   const bgColors = ['#FFD500', '#F72585', '#5A4BFF', '#00F5D4', '#FF6B35', '#7B61FF'];
-                  const bg = selectedValidator === validator.stakerAddress ? '#00F5D4' : bgColors[vidx % bgColors.length];
+                  const bg = bgColors[vidx % bgColors.length];
                   const isDark = ['#F72585', '#5A4BFF', '#7B61FF'].includes(bg);
                   const textColor = isDark ? '#fff' : '#000';
 
                   return (
                     <button
                       key={validator.stakerAddress}
-                      onClick={() => loadPools(validator.stakerAddress)}
-                      className="neo-card p-5 text-left cursor-pointer transition-all hover:-translate-y-1"
+                      onClick={() => openValidatorModal(validator)}
+                      className="neo-card p-5 text-left cursor-pointer transition-all hover:-translate-y-1 group"
                       style={{ background: bg }}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 flex items-center justify-center bg-yellow-300 border-2 border-black font-black text-sm">
+                        <div className="w-12 h-12 flex items-center justify-center bg-yellow-300 border-2 border-black font-black text-base
+                          group-hover:scale-110 transition-transform" style={{ boxShadow: '3px 3px 0px #000' }}>
                           {validator.name.slice(0, 2).toUpperCase()}
                         </div>
-                        <div>
-                          <p className="text-lg font-black" style={{ color: textColor }}>{validator.name}</p>
-                          <p className="text-xs font-mono" style={{ color: textColor }}>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-lg font-black truncate" style={{ color: textColor }}>{validator.name}</p>
+                          <p className="text-xs font-mono truncate" style={{ color: textColor }}>
                             {validator.stakerAddress.slice(0, 12)}...{validator.stakerAddress.slice(-6)}
                           </p>
                         </div>
                       </div>
-                      <div className="mt-3 flex items-center gap-2">
-                        <TrendingUp className="w-4 h-4" style={{ color: textColor }} />
-                        <span className="text-xs font-bold uppercase" style={{ color: textColor }}>Click to load pools</span>
+                      <div className="mt-3 flex items-center gap-2 px-3 py-1.5 bg-black/10 border-2 border-black/20 w-fit">
+                        <TrendingUp className="w-3.5 h-3.5" style={{ color: textColor }} />
+                        <span className="text-xs font-bold uppercase" style={{ color: textColor }}>
+                          View Pools →
+                        </span>
                       </div>
                     </button>
                   );
                 })}
               </div>
-
-              {/* Pool Results */}
-              {isLoadingPools && (
-                <div className="flex justify-center py-12">
-                  <Loader2 className="w-8 h-8 animate-spin text-black" />
-                </div>
-              )}
-
-              {!isLoadingPools && selectedValidator && pools.length > 0 && (
-                <div className="space-y-4">
-                  {pools.map((pool, i) => (
-                    <div key={i} className="neo-card p-5" style={{ background: i % 2 === 0 ? '#00F5D4' : '#5A4BFF' }}>
-                      <div className="flex items-center justify-between flex-wrap gap-4">
-                        <div>
-                          <p className="text-lg font-black" style={{ color: i % 2 === 1 ? '#fff' : '#000' }}>{pool.token.symbol} Pool</p>
-                          <p className="text-xs font-mono" style={{ color: i % 2 === 1 ? '#fff' : '#000' }}>
-                            {pool.poolContract.slice(0, 12)}...{pool.poolContract.slice(-6)}
-                          </p>
-                          {pool.validatorName && (
-                            <p className="text-xs font-bold mt-1" style={{ color: i % 2 === 1 ? '#fff' : '#000' }}>Validator: {pool.validatorName}</p>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="text-right mr-4">
-                            <p className="text-2xl font-black text-black">{pool.stakedAmount}</p>
-                            <p className="text-xs font-bold text-black uppercase">Total Staked</p>
-                          </div>
-                          {isConnected && (
-                            <button
-                              onClick={() => openStakeForPool(pool.poolContract)}
-                              disabled={isStakingLoading}
-                              className="px-4 py-2.5 bg-[#FFD500] border-3 border-black text-black font-black text-sm uppercase
-                                shadow-[3px_3px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px]
-                                transition-all disabled:opacity-50 flex items-center gap-1.5"
-                            >
-                              <ArrowDownToLine className="w-4 h-4" /> Stake
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {!isLoadingPools && selectedValidator && pools.length === 0 && (
-                <div className="neo-card p-8 text-center">
-                  <Shield className="w-10 h-10 mx-auto mb-3 text-black" />
-                  <p className="text-lg font-black text-black">No Active Pools Found</p>
-                  <p className="text-sm font-bold text-black mt-2">
-                    {poolError || 'This validator doesn\'t have active delegation pools on the current network.'}
-                  </p>
-                </div>
-              )}
             </div>
           </>
         )}
@@ -384,7 +363,7 @@ export default function StakePage() {
                 <Shield className="w-12 h-12 mx-auto mb-4 text-black" />
                 <p className="text-xl font-black text-black mb-2">No Pool Selected</p>
                 <p className="text-sm font-bold text-black">
-                  Go to &quot;Explore Pools&quot; tab, select a validator, and click &quot;Stake&quot; to get started.
+                  Go to &quot;Explore Pools&quot; tab, click a validator, and stake to get started.
                 </p>
                 <button
                   onClick={() => setActiveTab('pools')}
@@ -511,7 +490,7 @@ export default function StakePage() {
                 <Coins className="w-12 h-12 mx-auto mb-4 text-black" />
                 <p className="text-xl font-black text-black mb-2">No Position Yet</p>
                 <p className="text-sm font-bold text-black">
-                  You haven&apos;t staked in this pool yet. Go to &quot;Explore Pools&quot; and click &quot;Stake&quot; to begin earning rewards.
+                  You haven&apos;t staked in this pool yet. Go to &quot;Explore Pools&quot; and click a validator to begin earning rewards.
                 </p>
                 <button
                   onClick={() => setActiveTab('pools')}
@@ -531,23 +510,23 @@ export default function StakePage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="text-center p-4 border-2 border-black bg-yellow-50">
               <p className="text-3xl mb-2">1️⃣</p>
-              <p className="text-sm font-black text-black uppercase mb-1">Browse Validators</p>
+              <p className="text-sm font-black text-black uppercase mb-1">Pick a Validator</p>
               <p className="text-xs font-bold text-black">
-                Explore available validators and their delegation pools powered by the SDK.
+                Click any validator card to see their available delegation pools.
               </p>
             </div>
             <div className="text-center p-4 border-2 border-black bg-blue-50">
               <p className="text-3xl mb-2">2️⃣</p>
               <p className="text-sm font-black text-black uppercase mb-1">Stake STRK</p>
               <p className="text-xs font-bold text-black">
-                Use <code className="bg-gray-200 px-1">wallet.stake()</code> to delegate tokens and start earning immediately.
+                Enter your amount and stake directly from the popup — no extra steps needed.
               </p>
             </div>
             <div className="text-center p-4 border-2 border-black bg-green-50">
               <p className="text-3xl mb-2">3️⃣</p>
               <p className="text-sm font-black text-black uppercase mb-1">Earn & Claim</p>
               <p className="text-xs font-bold text-black">
-                Track rewards via <code className="bg-gray-200 px-1">getPoolPosition()</code> and claim anytime.
+                Track rewards in the &quot;My Position&quot; tab and claim anytime.
               </p>
             </div>
             <div className="text-center p-4 border-2 border-black bg-purple-50">
@@ -561,12 +540,181 @@ export default function StakePage() {
         </div>
       </div>
 
-      {/* ─── STAKE MODAL ─── */}
+      {/* ─── VALIDATOR POOLS POPUP ─── */}
+      {showValidatorModal && selectedValidator && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => { if (!isStakingLoading) { setShowValidatorModal(false); setInlineStakePool(null); } }}
+        >
+          <div
+            className="neo-card w-full max-w-lg max-h-[85vh] overflow-y-auto"
+            style={{ background: '#fff' }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="sticky top-0 z-10 p-5 border-b-3 border-black flex items-center justify-between"
+              style={{ background: '#FFD500' }}>
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 flex items-center justify-center bg-black text-yellow-300 font-black text-sm border-2 border-black shrink-0"
+                  style={{ boxShadow: '3px 3px 0px rgba(0,0,0,0.3)' }}>
+                  {selectedValidator.name.slice(0, 2).toUpperCase()}
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-lg font-black text-black uppercase truncate">{selectedValidator.name}</h3>
+                  <p className="text-xs font-mono text-black truncate">
+                    {selectedValidator.stakerAddress.slice(0, 16)}...{selectedValidator.stakerAddress.slice(-6)}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => { setShowValidatorModal(false); setInlineStakePool(null); }}
+                className="w-8 h-8 flex items-center justify-center bg-black text-yellow-300 border-2 border-black
+                  hover:bg-gray-800 transition-colors shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5">
+              {isLoadingPools ? (
+                <div className="flex flex-col items-center justify-center py-12 gap-3">
+                  <Loader2 className="w-8 h-8 animate-spin text-black" />
+                  <p className="text-sm font-bold text-black">Loading pools...</p>
+                </div>
+              ) : poolError ? (
+                <div className="text-center py-8">
+                  <AlertTriangle className="w-10 h-10 mx-auto mb-3 text-black" />
+                  <p className="text-base font-black text-black mb-1">No Pools Found</p>
+                  <p className="text-sm font-bold text-gray-600">{poolError}</p>
+                </div>
+              ) : validatorPools.length === 0 ? (
+                <div className="text-center py-8">
+                  <Shield className="w-10 h-10 mx-auto mb-3 text-black" />
+                  <p className="text-base font-black text-black">No Active Pools</p>
+                  <p className="text-sm font-bold text-gray-600 mt-1">
+                    This validator doesn&apos;t have active delegation pools.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-xs font-black uppercase text-gray-500 mb-2">
+                    {validatorPools.length} pool{validatorPools.length > 1 ? 's' : ''} available
+                  </p>
+
+                  {validatorPools.map((pool, i) => {
+                    const isExpanded = inlineStakePool?.poolContract === pool.poolContract;
+                    const poolBg = i % 2 === 0 ? '#00F5D4' : '#5A4BFF';
+                    const poolTextColor = i % 2 === 1 ? '#fff' : '#000';
+
+                    return (
+                      <div key={i} className="neo-card overflow-hidden" style={{ background: poolBg }}>
+                        {/* Pool info row */}
+                        <div className="p-4">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                              <p className="text-base font-black" style={{ color: poolTextColor }}>
+                                {pool.token.symbol} Pool
+                              </p>
+                              <p className="text-xs font-mono truncate" style={{ color: poolTextColor }}>
+                                {pool.poolContract.slice(0, 12)}...{pool.poolContract.slice(-6)}
+                              </p>
+                              <div className="flex items-center gap-2 mt-1.5">
+                                <Coins className="w-3.5 h-3.5" style={{ color: poolTextColor }} />
+                                <span className="text-sm font-black" style={{ color: poolTextColor }}>
+                                  {pool.stakedAmount}
+                                </span>
+                                <span className="text-xs font-bold uppercase" style={{ color: poolTextColor, opacity: 0.7 }}>
+                                  total staked
+                                </span>
+                              </div>
+                            </div>
+
+                            {isConnected && (
+                              <button
+                                onClick={() => {
+                                  if (isExpanded) {
+                                    setInlineStakePool(null);
+                                  } else {
+                                    setInlineStakePool(pool);
+                                    setInlineStakeAmount('');
+                                  }
+                                }}
+                                disabled={isStakingLoading}
+                                className="px-4 py-2 bg-[#FFD500] border-3 border-black text-black font-black text-sm uppercase
+                                  shadow-[3px_3px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px]
+                                  transition-all disabled:opacity-50 flex items-center gap-1.5 shrink-0"
+                              >
+                                <ArrowDownToLine className="w-4 h-4" />
+                                {isExpanded ? 'Close' : 'Stake'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Inline stake form — expands when clicked */}
+                        {isExpanded && (
+                          <div className="border-t-3 border-black p-4" style={{ background: '#FFD500' }}>
+                            <label className="block text-xs font-black uppercase text-black mb-1.5">
+                              Amount ({pool.token.symbol})
+                            </label>
+                            <input
+                              type="number"
+                              value={inlineStakeAmount}
+                              onChange={e => setInlineStakeAmount(e.target.value)}
+                              placeholder="e.g. 100"
+                              min="0"
+                              step="0.01"
+                              autoFocus
+                              className="w-full p-3 border-3 border-black bg-white text-black font-bold text-lg
+                                focus:outline-none focus:ring-2 focus:ring-black"
+                            />
+                            {balanceData && (
+                              <p className="text-xs font-bold text-black mt-1">
+                                Available: {balanceData.balance}
+                              </p>
+                            )}
+                            <div className="flex gap-2 mt-3">
+                              <button
+                                onClick={handleInlineStake}
+                                disabled={isStakingLoading || !inlineStakeAmount || parseFloat(inlineStakeAmount) <= 0}
+                                className="flex-1 py-2.5 bg-black text-[#FFD500] font-black uppercase text-sm border-3 border-black
+                                  shadow-[3px_3px_0px_#555] hover:shadow-[1px_1px_0px_#555] hover:translate-x-[2px] hover:translate-y-[2px]
+                                  transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                              >
+                                {isStakingLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                                {isStakingLoading ? 'Staking...' : 'Stake Now'}
+                              </button>
+                            </div>
+                            <p className="text-xs font-bold text-black mt-2 flex items-center gap-1 opacity-70">
+                              <Clock className="w-3 h-3" /> Gasless via Starkzap SDK
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {!isConnected && !isLoadingPools && validatorPools.length > 0 && (
+                <div className="neo-card p-4 mt-4 text-center" style={{ background: '#FFD500' }}>
+                  <p className="text-sm font-black text-black">
+                    Connect your wallet to stake in these pools.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── STAKE MORE MODAL (from My Position tab) ─── */}
       {showStakeModal && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => !isStakingLoading && setShowStakeModal(false)}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => !isStakingLoading && setShowStakeModal(false)}>
           <div className="neo-card p-6 w-full max-w-md" style={{ background: '#FFD500' }} onClick={e => e.stopPropagation()}>
             <h3 className="text-xl font-black text-black uppercase mb-4 flex items-center gap-2">
-              <ArrowDownToLine className="w-5 h-5" /> Stake STRK
+              <ArrowDownToLine className="w-5 h-5" /> Stake More STRK
             </h3>
 
             <div className="mb-4">
@@ -578,6 +726,7 @@ export default function StakePage() {
                 placeholder="e.g. 100"
                 min="0"
                 step="0.01"
+                autoFocus
                 className="w-full p-3 border-3 border-black bg-white text-black font-bold text-lg
                   focus:outline-none focus:ring-2 focus:ring-black"
               />
@@ -618,7 +767,7 @@ export default function StakePage() {
 
       {/* ─── UNSTAKE MODAL ─── */}
       {showUnstakeModal && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => !isStakingLoading && setShowUnstakeModal(false)}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => !isStakingLoading && setShowUnstakeModal(false)}>
           <div className="neo-card p-6 w-full max-w-md" style={{ background: '#F72585' }} onClick={e => e.stopPropagation()}>
             <h3 className="text-xl font-black text-white uppercase mb-4 flex items-center gap-2">
               <ArrowUpFromLine className="w-5 h-5 text-white" /> Unstake STRK
@@ -638,6 +787,7 @@ export default function StakePage() {
                 placeholder="e.g. 50"
                 min="0"
                 step="0.01"
+                autoFocus
                 className="w-full p-3 border-3 border-black bg-white text-black font-bold text-lg
                   focus:outline-none focus:ring-2 focus:ring-white"
               />
