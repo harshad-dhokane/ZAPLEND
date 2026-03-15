@@ -5,3 +5,5 @@ contracts/deployer/
 .env.local
 contracts/target/
 contracts/
+plans/
+specs/
