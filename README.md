@@ -2,9 +2,9 @@
 
 > Borrow with less collateral when friends vouch for you. Trust-based lending powered by Starknet and [Starkzap SDK](https://github.com/keep-starknet-strange/starkzap).
 
-ZapLend re-imagines DeFi peer-to-peer lending by introducing "Social Collateral." Borrowers can reduce their required capital by inviting friends to essentially co-sign their loan natively on-chain.
+ZapLend re-imagines DeFi peer-to-peer lending by introducing **"Social Collateral."** Borrowers can reduce their required capital by inviting friends to essentially co-sign their loan natively on-chain.
 
-![ZapLend Home](frontend/public/screenshots/home_new.png)
+![ZapLend Home](frontend/public/screenshots/landing_hero.png)
 
 ## 🏆 Starkzap Developer Challenge Submission
 
@@ -16,41 +16,42 @@ ZapLend is proudly submitted to the **Starkzap Developer Challenge**. It answers
 3. **Complex Payload Execution**: Aggregates multi-call transactions to handle ERC20 approvals and complex Starknet contract interactions seamlessly.
 
 ### Links
+- **Live Demo App**: [https://zaplend.vercel.app/](https://zaplend.vercel.app/)
 - **GitHub Repository**: [harshad-dhokane/ZAPLEND](https://github.com/harshad-dhokane/ZAPLEND)
 - **Technical Guide & Architecture Blueprint**: [Read GUIDE.md](./GUIDE.md)
-- **Live Demo App**: [Add Vercel URL Here]
+
+---
 
 ## 🌟 Features & The Flow
 
 ZapLend features a vibrant, Neo-Brutalism UI that makes complex DeFi interactions feel like a modern consumer app.
 
 ### 1. The Borrow Request
-A user connects their wallet (via Cartridge) and submits a loan request for X amount of STRK. Normally, they would need 120% collateral. In ZapLend, they can set a **Social Collateral Target**. 
+A user connects their wallet (via Cartridge) and submits a loan request. Normally, they would need 120% collateral. In ZapLend, they can set a **Social Collateral Target**.
 - They put down a baseline deposit.
-- The rest of the required collateral is delegated.
+- The rest of the required collateral is delegated to their social circle.
 
-![ZapLend Borrow Request](frontend/public/screenshots/borrow_new.png)
+![ZapLend Borrow Request](frontend/public/screenshots/borrow_request.png)
 
 ### 2. Shareable Vouching
-The borrower receives a custom link (e.g. `/loan/8`) to send to friends. 
+The borrower receives a custom link to send to friends. Anyone can explore the **Loan Marketplace** to find borrowers they trust and support.
+
+![ZapLend Marketplace](frontend/public/screenshots/lend_marketplace.png)
 
 ### 3. Friends Vouch (Gasless!)
-Friends navigate to the link and click **Vouch**. They stake their own STRK towards the borrower's goal. Because ZapLend uses the Starkzap SDK, this transaction is heavily optimized to be fast and user-friendly.
+Friends click **Vouch** and stake their own STRK towards the borrower's goal. Because ZapLend uses the Starkzap SDK, this transaction is heavily optimized to be fast and user-friendly.
 
 ### 4. Loan Activation & Live Activity Feed
-Once the social collateral threshold is met, the loan becomes active. Funds are disbursed. 
-The **Dashboard Activity Feed** acts as a global timeline, tracking:
-- New loan creations
-- Friends providing social collateral
-- Loans being fully funded
-- Repayments and Defaults
+Once the social collateral threshold is met, the loan becomes active and funds are disbursed. The **Dashboard** acts as a global timeline, tracking everything from loan creation to real-time vouching activity.
 
-![ZapLend Dashboard](frontend/public/screenshots/dashboard_new.png)
+![ZapLend Dashboard](frontend/public/screenshots/dashboard_history.png)
 
 ### 5. Analytics & Credit Profile
-Borrowers repay their loan + interest on the Dashboard. A robust Analytics dashboard tracks aggregate platform metrics, breaking down top loans by added collateral vs repaid value.
+A robust Analytics dashboard tracks aggregate platform metrics, breaking down top loans by added collateral vs repaid value.
 
-![ZapLend Analytics](frontend/public/screenshots/analytics_new.png)
+![ZapLend Analytics](frontend/public/screenshots/analytics_metrics.png)
+
+---
 
 ## 🏗️ Architecture
 
@@ -65,8 +66,8 @@ Written entirely in modern Cairo 2.x.
 ### Frontend (Next.js + Starkzap)
 | Layer | Technology |
 |-------|------------|
-| Framework | Next.js 16 (App Router) |
-| Styling | Tailwind CSS v4 |
+| Framework | Next.js (App Router) |
+| Styling | Tailwind CSS |
 | State | React Query |
 | Wallet | Starkzap SDK (`starkzap`) |
 
@@ -78,7 +79,6 @@ Written entirely in modern Cairo 2.x.
 - Starknet wallet (via Cartridge Controller)
 
 ### Frontend Setup
-
 ```bash
 cd frontend
 npm install
@@ -91,5 +91,4 @@ Open [http://localhost:3000](http://localhost:3000) to see the app.
 
 ---
 ## 📄 License
-
 MIT

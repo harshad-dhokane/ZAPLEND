@@ -536,6 +536,41 @@ select:focus-visible {
    MOBILE RESPONSIVE
    ═══════════════════════════════════════════════ */
 
+/* Tablet landscape (768px - 1024px) */
+@media (max-width: 1024px) {
+  .glass-card,
+  .neo-card {
+    box-shadow: 2px 2px 0px #000;
+  }
+
+  .glass-card:hover,
+  .neo-card:hover {
+    box-shadow: 4px 4px 0px #000;
+  }
+
+  h1 {
+    font-size: 2.5rem !important;
+    line-height: 1.1;
+  }
+
+  h2 {
+    font-size: 1.75rem !important;
+  }
+
+  /* Smaller buttons on tablet */
+  .btn-gradient,
+  .btn-primary {
+    padding: 8px 20px;
+    font-size: 0.85rem;
+  }
+
+  .btn-secondary {
+    padding: 6px 16px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Mobile (max 640px) */
 @media (max-width: 640px) {
   /* Smaller card padding and shadows */
   .glass-card,
@@ -582,16 +617,17 @@ select:focus-visible {
   }
 
   /* Smaller buttons */
-  .btn-gradient {
-    padding: 10px 20px;
-    font-size: 13px;
+  .btn-gradient,
+  .btn-primary {
+    padding: 8px 16px;
+    font-size: 12px;
     box-shadow: 2px 2px 0px #000;
     border-width: 2px;
   }
 
   .btn-secondary {
-    padding: 8px 16px;
-    font-size: 12px;
+    padding: 6px 14px;
+    font-size: 11px;
   }
 
   /* Badges */
@@ -607,7 +643,8 @@ select:focus-visible {
   }
 
   /* Input fields */
-  .input-glass {
+  .input-glass,
+  .neo-input {
     padding: 10px 14px;
     font-size: 14px;
     border-width: 2px;
@@ -618,6 +655,53 @@ select:focus-visible {
   .neo-card .w-14 { width: 2.75rem; height: 2.75rem; }
   .neo-card .w-12 { width: 2.5rem; height: 2.5rem; }
   .neo-card .w-10 { width: 2.25rem; height: 2.25rem; }
+}
+
+/* Small phone (max 480px) */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem !important;
+    line-height: 1.2;
+  }
+
+  h2 {
+    font-size: 1.15rem !important;
+  }
+
+  h3 {
+    font-size: 0.9rem !important;
+  }
+
+  .glass-card,
+  .neo-card {
+    padding: 10px;
+    border-width: 2px;
+    box-shadow: 1px 1px 0px #000;
+  }
+
+  .glass-card:hover,
+  .neo-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 2px 2px 0px #000;
+  }
+
+  .btn-gradient,
+  .btn-primary {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+
+  .btn-secondary {
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+
+  .input-glass,
+  .neo-input {
+    padding: 8px 12px;
+    font-size: 13px;
+    border-width: 2px;
+  }
 }
 
 /* Reduced motion preference */

@@ -9,6 +9,7 @@ import { useLiquidate } from '@/hooks/useLiquidate';
 import { useStarkzap } from '@/providers/StarkzapProvider';
 import { Search, Loader2, Inbox, ChevronDown, ChevronUp, TrendingUp, Clock, Users, AlertTriangle, Share2, Copy, Check, Coins, Shield, Zap, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import { Pagination } from '@/components/Pagination';
 
 export default function LendPage() {
   const { data: loans, isLoading } = useLoans();
@@ -21,6 +22,9 @@ export default function LendPage() {
   const [vouchAmount, setVouchAmount] = useState('');
   const [showVouchModal, setShowVouchModal] = useState(false);
   const [expandedLoanId, setExpandedLoanId] = useState<string | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   const toggleExpand = (id: string) => {
     setExpandedLoanId(expandedLoanId === id ? null : id);
@@ -31,6 +35,9 @@ export default function LendPage() {
     if (searchQuery && !loan.borrower.toLowerCase().includes(searchQuery.toLowerCase()) && !loan.id.includes(searchQuery)) return false;
     return true;
   });
+
+  const totalPages = Math.ceil((filteredLoans?.length || 0) / ITEMS_PER_PAGE);
+  const paginatedLoans = filteredLoans?.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   const filterOptions = [
     { value: 'all', label: 'All Loans' },
@@ -81,25 +88,69 @@ export default function LendPage() {
         </div>
 
         {/* Controls */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6 md:mb-8 animate-fade-in-up animate-delay-100">
-          <div className="relative flex-1">
-            <Search className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4" style={{ color: '#000' }} />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="neo-input pl-7 sm:pl-10 text-[10px] sm:text-sm py-1.5 sm:py-2.5"
-              style={{ paddingLeft: '24px' }}
-              placeholder="Search borrower or ID..."
-            />
+        <div className="flex flex-col md:flex-row items-center gap-4 mb-6 md:mb-8 animate-fade-in-up animate-delay-100 w-full relative z-40">
+          <div className="flex flex-row items-center w-full md:w-auto gap-2 sm:gap-4 md:flex-1 relative z-50">
+            {/* Search Bar */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#000' }} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                className="neo-input !pl-10 sm:!pl-12 text-xs sm:text-sm py-0 w-full h-[42px] sm:h-[48px] leading-[42px] sm:leading-[48px]"
+                placeholder="Search..."
+              />
+            </div>
+
+            {/* Mobile Dropdown (Hidden on md+) */}
+            <div className="md:hidden relative shrink-0 z-50">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center justify-between border-2 border-black text-xs sm:text-sm py-0 pl-3 sm:pl-4 pr-2 sm:pr-3 font-black uppercase cursor-pointer outline-none h-[42px] sm:h-[48px] m-0 transition-transform hover:-translate-y-0.5"
+                style={{
+                  background: 'var(--accent-primary)',
+                  minWidth: '120px',
+                  boxShadow: '2px 2px 0px #000'
+                }}
+              >
+                <span>{filterOptions.find(o => o.value === filter)?.label}</span>
+                <ChevronDown className={`w-4 h-4 sm:w-5 sm:h-5 ml-2 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isDropdownOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)} />
+                  <div className="absolute top-[calc(100%+8px)] right-0 w-full bg-white border-[3px] border-black z-50 animate-fade-in-up" style={{ boxShadow: '6px 6px 0px #000' }}>
+                    {filterOptions.map(({ value, label }) => (
+                      <button
+                        key={value}
+                        onClick={() => {
+                          setFilter(value);
+                          setCurrentPage(1);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 md:px-4 py-3 text-xs sm:text-sm font-black uppercase transition-colors border-b-[3px] border-black last:border-b-0 ${filter === value ? '' : 'hover:bg-yellow-300'}`}
+                        style={{
+                          background: filter === value ? 'var(--accent-primary)' : '#fff',
+                        }}
+                      >
+                        <span className="truncate pr-1">{label}</span>
+                        {filter === value && <Check className="w-4 h-4 shrink-0" />}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
-          <div className="flex gap-1.5">
+          {/* Desktop Filter Buttons (Hidden on mobile) */}
+          <div className="hidden md:flex gap-2 shrink-0">
             {filterOptions.map(({ value, label }) => (
               <button
                 key={value}
-                onClick={() => setFilter(value)}
-                className="px-2.5 py-1.5 md:px-4 md:py-2 text-[10px] md:text-xs font-black font-display transition-all duration-150"
+                onClick={() => { setFilter(value); setCurrentPage(1); }}
+                className="px-4 py-0 h-[48px] text-xs font-black font-display transition-all duration-150 whitespace-nowrap shrink-0"
                 style={{
                   background: filter === value ? 'var(--accent-primary)' : '#fff',
                   border: '2px solid #000',
@@ -135,7 +186,7 @@ export default function LendPage() {
           </div>
         ) : filteredLoans && filteredLoans.length > 0 ? (
           <div className="flex flex-col gap-3 animate-fade-in-up animate-delay-200">
-            {filteredLoans.map((loan, idx) => {
+            {paginatedLoans?.map((loan, idx) => {
               const isMine = address && loan.borrower.toLowerCase() === address.toLowerCase();
               const derivedUsername = isMine && username 
                 ? username 
@@ -178,6 +229,12 @@ export default function LendPage() {
                 </div>
               );
             })}
+            
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </div>
         ) : (
           <div className="neo-card p-12 text-center animate-fade-in-up animate-delay-200">

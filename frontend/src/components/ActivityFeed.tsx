@@ -5,6 +5,7 @@ import { useLoans } from '@/hooks/useLoans';
 import { useStarkzap } from '@/providers/StarkzapProvider';
 import { Clock, CheckCircle2, AlertTriangle, Shield, Wallet, ArrowRight, Users } from 'lucide-react';
 import Link from 'next/link';
+import { Pagination } from './Pagination';
 
 type ActivityEvent = {
   id: string;
@@ -38,6 +39,8 @@ export function ActivityFeed() {
   const { address } = useStarkzap();
   const [mountTime] = useState(() => Math.floor(Date.now() / 1000));
   const [currentTime, setCurrentTime] = useState(() => Math.floor(Date.now() / 1000));
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 8;
 
   // Force re-renders every 10 seconds to update relative times
   useEffect(() => {
@@ -215,43 +218,59 @@ export function ActivityFeed() {
       </div>
       
       <div className="space-y-3">
-        {events.map((event, idx) => {
-          const isMine = address && normalizeAddress(event.borrower) === normalizeAddress(address);
+        {(() => {
+          const totalPages = Math.ceil(events.length / ITEMS_PER_PAGE);
+          const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+          const paginatedEvents = events.slice(startIdx, startIdx + ITEMS_PER_PAGE);
           
           return (
-            <Link 
-              href={`/loan/${event.loanId}`} 
-              key={event.id}
-              className="group flex gap-4 p-3 border-[4px] border-black transition-all bg-white shadow-[4px_4px_0px_#000] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_#000]"
-              style={{ animationDelay: `${idx * 50}ms` }}
-            >
-              <div 
-                className="w-10 h-10 shrink-0 border-2 border-black shadow-[2px_2px_0px_#000] flex items-center justify-center transition-transform group-hover:-translate-y-1"
-                style={{ background: getEventBg(event.type) }}
-              >
-                {getEventIcon(event.type)}
-              </div>
-              
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold truncate">
-                  {getEventLabel(event)}
-                </p>
+            <>
+              {paginatedEvents.map((event, idx) => {
+                const isMine = address && normalizeAddress(event.borrower) === normalizeAddress(address);
                 
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs font-bold font-mono bg-yellow-300 px-1 border-2 border-black">
-                    {isMine ? 'You' : `${event.borrower.slice(0, 6)}...${event.borrower.slice(-4)}`}
-                  </span>
-                  <span className="text-xs font-black text-black">• Loan #{event.loanId}</span>
-                  <span className="text-xs font-bold text-gray-600">• {event.timeLabel}</span>
-                </div>
-              </div>
+                return (
+                  <Link 
+                    href={`/loan/${event.loanId}`} 
+                    key={event.id}
+                    className="group flex gap-3 sm:gap-4 p-2.5 sm:p-3 border-[3px] sm:border-[4px] border-black transition-all bg-white shadow-[3px_3px_0px_#000] sm:shadow-[4px_4px_0px_#000] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_#000]"
+                    style={{ animationDelay: `${idx * 50}ms` }}
+                  >
+                    <div 
+                      className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 border-2 border-black shadow-[2px_2px_0px_#000] flex items-center justify-center transition-transform group-hover:-translate-y-1"
+                      style={{ background: getEventBg(event.type) }}
+                    >
+                      {getEventIcon(event.type)}
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm font-bold truncate">
+                        {getEventLabel(event)}
+                      </p>
+                      
+                      <div className="flex items-center gap-1.5 sm:gap-2 mt-1 flex-wrap">
+                        <span className="text-[10px] sm:text-xs font-bold font-mono bg-yellow-300 px-1 border border-black sm:border-2">
+                          {isMine ? 'You' : `${event.borrower.slice(0, 6)}...${event.borrower.slice(-4)}`}
+                        </span>
+                        <span className="text-[10px] sm:text-xs font-black text-black">• Loan #{event.loanId}</span>
+                        <span className="text-[10px] sm:text-xs font-bold text-gray-600">• {event.timeLabel}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="hidden sm:flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </Link>
+                );
+              })}
               
-              <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <ArrowRight className="w-4 h-4" />
-              </div>
-            </Link>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </>
           );
-        })}
+        })()}
       </div>
     </div>
   );

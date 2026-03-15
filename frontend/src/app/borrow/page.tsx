@@ -148,7 +148,7 @@ export default function BorrowPage() {
                     <Clock className="w-4 h-4" />
                     Loan Duration
                   </label>
-                  <div className="grid grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                     {['7', '14', '30', '60'].map((d) => (
                       <button
                         key={d}

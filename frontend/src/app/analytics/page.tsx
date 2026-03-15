@@ -210,24 +210,26 @@ export default function AnalyticsPage() {
               </h2>
 
               {stats.topVouched.length > 0 ? (
-                <div className="neo-card p-0 overflow-hidden">
-                  {/* Header Row */}
-                  <div className="grid grid-cols-6 p-3 bg-black text-white text-xs font-black uppercase border-b-3 border-black">
+                <div className="neo-card p-0 overflow-hidden w-full max-w-full">
+                  <div className="overflow-x-auto w-full">
+                    <div className="min-w-[600px] lg:min-w-full">
+                      {/* Header Row */}
+                      <div className="grid grid-cols-6 p-3 lg:p-4 bg-black text-white text-xs lg:text-sm font-black uppercase border-b-3 border-black gap-2">
                     <span>Rank</span>
-                    <span>Loan ID</span>
-                    <span>Borrow</span>
-                    <span>Vouch</span>
-                    <span>Added</span>
-                    <span>Repaid</span>
+                    <span className="truncate">Loan ID</span>
+                    <span className="truncate">Borrow</span>
+                    <span className="truncate">Vouch</span>
+                    <span className="truncate">Added</span>
+                    <span className="truncate">Repaid</span>
                   </div>
                   {stats.topVouched.map((loan, i) => (
                     <div key={loan.id}
-                      className="grid grid-cols-6 p-3 items-center border-b-3 border-black hover-lift"
+                      className="grid grid-cols-6 p-3 lg:p-4 items-center border-b-3 border-black hover-lift gap-2"
                       style={{
                         background: i === 0 ? 'rgba(255, 199, 0, 0.2)' : i === 1 ? 'rgba(0, 245, 212, 0.1)' : i % 2 === 0 ? '#fff' : 'rgba(0,0,0,0.02)',
                       }}>
-                      <span className="flex items-center gap-2">
-                        <span className="w-8 h-8 flex items-center justify-center font-black text-sm border-2 border-black"
+                      <span className="flex items-center gap-2 lg:gap-3">
+                        <span className="w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center font-black text-sm lg:text-base border-2 border-black shrink-0"
                           style={{
                             background: i === 0 ? '#FFD500' : i === 1 ? '#C0C0C0' : i === 2 ? '#CD7F32' : '#fff',
                             boxShadow: '2px 2px 0px #000',
@@ -235,18 +237,20 @@ export default function AnalyticsPage() {
                           {i + 1}
                         </span>
                       </span>
-                      <span className="text-sm font-black text-black">#{loan.id}</span>
-                      <span className="text-sm font-bold text-black">{loan.amount.toLocaleString()} STRK</span>
-                      <span className="text-sm font-black text-black">
-                        <span className="bg-[var(--accent-primary)] px-2 py-0.5 border-2 border-black inline-block"
+                      <span className="text-xs lg:text-sm font-black text-black truncate">#{loan.id}</span>
+                      <span className="text-xs lg:text-sm font-bold text-black truncate">{loan.amount.toLocaleString()} STRK</span>
+                      <span className="text-xs lg:text-sm font-black text-black truncate">
+                        <span className="bg-[var(--accent-primary)] px-2 lg:px-3 py-1 border-2 border-black inline-block whitespace-nowrap"
                           style={{ boxShadow: '2px 2px 0px #000' }}>
                           {loan.vouched.toLocaleString()} STRK
                         </span>
                       </span>
-                      <span className="text-sm font-bold text-black">{loan.added.toLocaleString()} STRK</span>
-                      <span className="text-sm font-bold text-black">{loan.repaid.toLocaleString()} STRK</span>
+                      <span className="text-xs lg:text-sm font-bold text-black truncate">{loan.added.toLocaleString()} STRK</span>
+                      <span className="text-xs lg:text-sm font-bold text-black truncate">{loan.repaid.toLocaleString()} STRK</span>
                     </div>
                   ))}
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="neo-card p-8 text-center">

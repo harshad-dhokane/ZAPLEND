@@ -1,14 +1,14 @@
 'use client';
 
 import { useStarkzap } from '@/providers/StarkzapProvider';
-import { Wallet, LogOut } from 'lucide-react';
+import { Wallet, LogOut, ExternalLink, User } from 'lucide-react';
 
 export function WalletButton() {
-  const { isConnected, isConnecting, address, connect, disconnect } = useStarkzap();
+  const { isConnected, isConnecting, address, connect, disconnect, openProfile } = useStarkzap();
 
   if (isConnecting) {
     return (
-      <button className="flex items-center gap-1.5 px-2.5 py-2 md:px-4 md:py-2.5 text-xs md:text-sm font-bold" style={{
+      <button className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-bold" style={{
         background: '#ffffff',
         border: '2px solid #000000',
         borderRadius: '0px',
@@ -27,23 +27,31 @@ export function WalletButton() {
 
   if (isConnected && address) {
     return (
-      <div className="flex items-center gap-1.5">
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5" style={{
+      <div className="flex items-center gap-2 md:gap-3">
+        <div className="hidden lg:flex items-center gap-2 px-2 py-1.5 text-xs xl:text-sm" style={{
           background: '#ffffff',
           border: '2px solid #000000',
           borderRadius: '0px',
           boxShadow: '2px 2px 0px #000',
         }}>
-          <div className="w-2 h-2 rounded-full" style={{
+          <div className="w-1.5 h-1.5 rounded-full" style={{
             background: 'var(--accent-green)',
             border: '1px solid #000',
           }} />
-          <span className="text-xs font-mono font-bold" style={{ color: '#000' }}>
-            {address.slice(0, 6)}...{address.slice(-4)}
-          </span>
+          <a
+            href={`https://sepolia.voyager.online/contract/${address}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 font-mono font-bold hover:underline"
+            style={{ color: '#000' }}
+            title="View transactions on Voyager"
+          >
+            <span>{address.slice(0, 4)}..{address.slice(-3)}</span>
+            <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+          </a>
         </div>
-        {/* Mobile: just show green dot + short address */}
-        <div className="sm:hidden flex items-center gap-1.5 px-2 py-1.5" style={{
+        {/* Mobile: same logic */}
+        <div className="lg:hidden flex items-center gap-1.5 px-2 py-1.5" style={{
           background: '#ffffff',
           border: '2px solid #000000',
           borderRadius: '0px',
@@ -53,13 +61,35 @@ export function WalletButton() {
             background: 'var(--accent-green)',
             border: '1px solid #000',
           }} />
-          <span className="text-[10px] font-mono font-bold" style={{ color: '#000' }}>
-            {address.slice(0, 4)}..{address.slice(-3)}
-          </span>
+          <a
+            href={`https://sepolia.voyager.online/contract/${address}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-[10px] font-mono font-bold hover:underline"
+            style={{ color: '#000' }}
+            title="View transactions on Voyager"
+          >
+            <span>{address.slice(0, 4)}..{address.slice(-3)}</span>
+            <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+          </a>
         </div>
         <button
+          onClick={openProfile}
+          className="hidden lg:flex w-8 h-8 xl:w-9 xl:h-9 flex-items-center justify-center shrink-0 transition-all duration-150 hover:translate-x-[1px] hover:translate-y-[1px]"
+          style={{
+            background: '#ffffff',
+            border: '2px solid #000000',
+            borderRadius: '0px',
+            color: '#000000',
+            boxShadow: '2px 2px 0px #000',
+          }}
+          title="Profile"
+        >
+          <User className="w-4 h-4 xl:w-5 xl:h-5" />
+        </button>
+        <button
           onClick={disconnect}
-          className="p-1.5 md:p-2 transition-all duration-150 hover:translate-x-[1px] hover:translate-y-[1px]"
+          className="w-8 h-8 xl:w-9 xl:h-9 flex items-center justify-center shrink-0 transition-all duration-150 hover:translate-x-[1px] hover:translate-y-[1px]"
           style={{
             background: 'var(--accent-red)',
             border: '2px solid #000000',
@@ -69,7 +99,7 @@ export function WalletButton() {
           }}
           title="Disconnect"
         >
-          <LogOut className="w-3.5 h-3.5" />
+          <LogOut className="w-4 h-4 xl:w-5 xl:h-5" />
         </button>
       </div>
     );
@@ -78,19 +108,17 @@ export function WalletButton() {
   return (
     <button
       onClick={connect}
-      className="flex items-center gap-1 font-black uppercase transition-all hover:-translate-y-0.5"
+      className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 text-xs xl:text-sm font-black uppercase transition-all hover:-translate-y-0.5 whitespace-nowrap"
       style={{
-        padding: '5px 10px',
-        fontSize: '10px',
         background: 'var(--accent-primary)',
         border: '2px solid #000',
         boxShadow: '2px 2px 0px #000',
         color: '#000',
       }}
     >
-      <Wallet className="w-3 h-3" />
-      <span className="hidden sm:inline">Connect Wallet</span>
-      <span className="sm:hidden">Connect</span>
+      <Wallet className="w-4 h-4 shrink-0" />
+      <span className="hidden lg:inline">Connect Wallet</span>
+      <span className="lg:hidden">Connect</span>
     </button>
   );
 }

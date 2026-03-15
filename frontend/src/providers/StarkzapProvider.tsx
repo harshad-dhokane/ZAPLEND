@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useRef, ReactNode } from 'react';
 import type { Call } from 'starknet';
 import type { WalletInterface } from 'starkzap';
 
@@ -20,6 +20,7 @@ const StarkzapContext = createContext<StarkzapContextType | undefined>(undefined
 
 const LOAN_CONTRACT = process.env.NEXT_PUBLIC_LOAN_CONTRACT_ADDRESS || '';
 const STRK_TOKEN = process.env.NEXT_PUBLIC_STRK_TOKEN_ADDRESS || '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d';
+const SESSION_KEY = 'zaplend_session';
 
 export function StarkzapProvider({ children }: { children: ReactNode }) {
   const [wallet, setWallet] = useState<WalletInterface | null>(null);
@@ -30,6 +31,7 @@ export function StarkzapProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [controller, setController] = useState<any>(null);
+  const hasAttemptedReconnect = useRef(false);
 
   const connect = useCallback(async () => {
     setIsConnecting(true);
@@ -99,6 +101,16 @@ export function StarkzapProvider({ children }: { children: ReactNode }) {
       setIsConnected(true);
       setAddress(userAddress);
       setUsername(discoveredUsername || null);
+
+      // Persist session to sessionStorage
+      try {
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+          address: userAddress,
+          username: discoveredUsername || null,
+        }));
+      } catch {
+        // sessionStorage may be unavailable in some contexts
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to connect wallet';
       setError(message);
@@ -118,7 +130,31 @@ export function StarkzapProvider({ children }: { children: ReactNode }) {
     setUsername(null);
     setController(null);
     setError(null);
+
+    // Clear persisted session
+    try {
+      sessionStorage.removeItem(SESSION_KEY);
+    } catch {
+      // sessionStorage may be unavailable
+    }
   }, [wallet]);
+
+  // Auto-reconnect on mount if session exists
+  useEffect(() => {
+    if (hasAttemptedReconnect.current || isConnected || isConnecting) return;
+    hasAttemptedReconnect.current = true;
+
+    try {
+      const stored = sessionStorage.getItem(SESSION_KEY);
+      if (stored) {
+        // Cartridge Controller persists its own session keys,
+        // so re-calling connect() will silently reconnect without showing a modal
+        connect();
+      }
+    } catch {
+      // sessionStorage unavailable
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const openProfile = useCallback(() => {
     if (controller && typeof controller.openProfile === 'function') {

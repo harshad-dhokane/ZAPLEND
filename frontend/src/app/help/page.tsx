@@ -526,17 +526,19 @@ export default function HelpPage() {
       </div>
 
       {/* Footer */}
-      <footer className="w-full border-t-[4px] border-black mt-16 px-6 py-8">
-        <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-3 font-display font-black text-2xl tracking-tighter">
-              <div className="w-8 h-8 bg-[var(--accent-primary)] border-[3px] border-black flex items-center justify-center">
-                <div className="w-3 h-3 bg-black" />
-              </div>
-              ZAPLEND
+      <footer className="w-full mt-8 md:mt-16 px-4 sm:px-6 md:px-12 pb-8">
+         <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6 border-t-[3px] md:border-t-[4px] border-black pt-6 md:pt-8">
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+               <div className="flex items-center gap-2 lg:gap-3 font-display tracking-tighter">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 flex items-center justify-center transition-all border-[2px] lg:border-[3px] border-black shadow-[2px_2px_0px_#000] lg:shadow-[3px_3px_0px_#000]" style={{
+                    background: 'var(--accent-primary)',
+                  }}>
+                    <Zap className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-black" />
+                  </div>
+                  <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black" style={{ color: '#000', textShadow: '2px 2px 0px var(--accent-primary)', letterSpacing: '-0.02em' }}>ZAPLEND</span>
+               </div>
             </div>
-          </div>
-          <div className="text-sm font-bold text-gray-600">
+          <div className="text-xs sm:text-sm font-bold text-gray-600">
             © ZapLend Protocol. All rights reserved.
           </div>
         </div>

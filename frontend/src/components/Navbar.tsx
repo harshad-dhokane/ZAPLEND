@@ -11,9 +11,9 @@ import { Zap, Coins, User, Menu, X } from 'lucide-react';
 const navItems = [
   { href: '/borrow', label: 'Borrow' },
   { href: '/lend', label: 'Lend' },
-  { href: '/stake', label: 'Stake' },
-  { href: '/dashboard', label: 'Dashboard' },
   { href: '/analytics', label: 'Analytics' },
+  { href: '/dashboard', label: 'Dashboard' },
+  { href: '/stake', label: 'Stake' },
   { href: '/help', label: 'Help' },
 ];
 
@@ -25,34 +25,32 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 animate-fade-in-down" style={{
+      <nav className="sticky top-0 z-50 animate-fade-in-down w-full" style={{
         background: 'rgba(255, 255, 255, 0.85)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        borderBottom: '4px solid #000000',
       }}>
-        <div className="max-w-7xl mx-auto px-3 md:px-6 h-14 md:h-16 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-1.5 md:gap-2.5 group shrink-0">
-            <div className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center transition-all duration-200 hover:-translate-y-1 hover:translate-x-1" style={{
-              background: 'var(--accent-primary)',
-              border: '2px solid #000',
-              boxShadow: '2px 2px 0px #000',
-            }}>
-              <Zap className="w-4 h-4 md:w-5 md:h-5" style={{ color: '#000' }} />
-            </div>
-            <span className="text-sm sm:text-lg md:text-2xl font-black font-display tracking-tight" style={{ color: '#000', textShadow: '2px 2px 0px var(--accent-primary)', letterSpacing: '-0.02em' }}>ZAPLEND</span>
-          </Link>
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12">
+          <div className="h-16 lg:h-20 flex items-center justify-between border-b-[3px] md:border-b-[4px] border-black pb-0 md:pb-0 relative">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2 lg:gap-3 group shrink-0">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 flex items-center justify-center transition-all duration-200 hover:-translate-y-1 hover:translate-x-1 border-[2px] lg:border-[3px] border-black shadow-[2px_2px_0px_#000] lg:shadow-[3px_3px_0px_#000]" style={{
+                background: 'var(--accent-primary)',
+              }}>
+                <Zap className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" style={{ color: '#000' }} />
+              </div>
+              <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black font-display tracking-tight" style={{ color: '#000', textShadow: '2px 2px 0px var(--accent-primary)', letterSpacing: '-0.02em' }}>ZAPLEND</span>
+            </Link>
 
-          {/* Nav Links — Desktop */}
-          <div className="hidden md:flex items-center gap-1">
-            {navItems.map(({ href, label }) => {
-              const active = pathname === href;
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  className="px-4 py-2 text-sm font-bold transition-all duration-150"
+            {/* Nav Links — Desktop */}
+            <div className="hidden lg:flex flex-1 justify-center items-center gap-0 lg:gap-0.5 xl:gap-1 pl-2 lg:pl-4 xl:pl-8">
+              {navItems.map(({ href, label }) => {
+                const active = pathname === href;
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="px-1.5 lg:px-2 xl:px-3 py-1.5 text-xs xl:text-sm font-bold transition-all duration-150 whitespace-nowrap"
                   style={{
                     background: active ? '#000' : 'transparent',
                     color: active ? '#fff' : '#000',
@@ -67,42 +65,25 @@ export function Navbar() {
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-1.5 md:gap-3">
+          <div className="flex items-center gap-1.5 md:gap-2 shrink-0 lg:pr-4 xl:pr-6">
             {isConnected && balanceData && (
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5" style={{
+              <div className="hidden lg:flex items-center gap-2 px-2 py-1.5 text-xs xl:text-sm" style={{
                 background: '#7C3AED',
                 border: '2px solid #000',
                 boxShadow: '2px 2px 0px #000',
               }}>
-                <Coins className="w-3.5 h-3.5" style={{ color: '#fff' }} />
-                <span className="text-sm font-bold" style={{ color: '#fff' }}>
-                  {balanceData.balance}
+                <Coins className="w-4 h-4 xl:w-5 xl:h-5" style={{ color: '#fff' }} />
+                <span className="font-bold whitespace-nowrap uppercase" style={{ color: '#fff' }}>
+                  {balanceData.balance} <span className="hidden xl:inline">STRK</span>
                 </span>
-                <span className="text-xs font-bold" style={{ color: '#fff' }}>STRK</span>
               </div>
-            )}
-            {isConnected && (
-              <button
-                onClick={openProfile}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-sm font-bold transition-all hover:-translate-y-0.5"
-                style={{
-                  background: '#fff',
-                  border: '2px solid #000',
-                  boxShadow: '2px 2px 0px #000',
-                  color: '#000',
-                  textTransform: 'uppercase',
-                }}
-              >
-                <User className="w-3.5 h-3.5" />
-                Profile
-              </button>
             )}
             <WalletButton />
             
             {/* Hamburger — Mobile */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 transition-all"
+              className="lg:hidden flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 transition-all shrink-0"
               style={{
                 background: mobileOpen ? '#000' : 'var(--accent-primary)',
                 border: '2px solid #000',
@@ -112,10 +93,11 @@ export function Navbar() {
               aria-label="Toggle navigation menu"
             >
               {mobileOpen
-                ? <X className="w-3.5 h-3.5 text-white" />
-                : <Menu className="w-3.5 h-3.5 text-black" />
+                ? <X className="w-4 h-4 text-white" />
+                : <Menu className="w-4 h-4 text-black" />
               }
             </button>
+          </div>
           </div>
         </div>
       </nav>
@@ -123,7 +105,7 @@ export function Navbar() {
       {/* ═══ Mobile Slide-Down Menu ═══ */}
       {mobileOpen && (
         <div
-          className="md:hidden fixed inset-0 z-40 animate-fade-in-up"
+          className="lg:hidden fixed inset-0 z-[60] animate-fade-in-up"
           style={{ top: '68px', background: 'rgba(0,0,0,0.5)' }}
           onClick={() => setMobileOpen(false)}
         >

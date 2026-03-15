@@ -155,36 +155,36 @@ export default function DashboardPage() {
     <main className="min-h-screen">
       <Navbar />
 
-      <div className="max-w-[1400px] mx-auto px-4 md:px-8 pt-12 pb-24 flex flex-col md:flex-row gap-8 items-start">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-8 pt-6 md:pt-12 pb-24 flex flex-col lg:flex-row gap-6 md:gap-8 items-start w-full">
         
         {/* SIDEBAR */}
-        <aside className="w-full md:w-72 shrink-0 animate-fade-in-up">
-          <div className="neo-card p-6">
-            <h2 className="text-xl font-black uppercase mb-6 text-black border-b-4 border-black pb-4">
+        <aside className="w-full lg:w-72 shrink-0 animate-fade-in-up">
+          <div className="neo-card p-4 md:p-6 w-full">
+            <h2 className="text-lg md:text-xl font-black uppercase mb-4 md:mb-6 text-black border-b-3 md:border-b-4 border-black pb-3 md:pb-4 text-center lg:text-left">
               DASHBOARD
             </h2>
             
-            <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-2 lg:flex lg:flex-col gap-2 md:gap-3 pb-2 lg:pb-0">
               {sidebarLinks.map((link) => {
                 const isActive = activeTab === link.id;
                 return (
                   <button
                     key={link.id}
                     onClick={() => setActiveTab(link.id)}
-                    className={`flex items-center gap-3 w-full p-4 font-bold border-2 transition-all ${
+                    className={`flex items-center justify-center lg:justify-start gap-1.5 md:gap-3 w-full p-2.5 md:p-4 font-bold border-2 transition-all shrink-0 ${
                       isActive 
-                        ? 'bg-black text-white border-black translate-x-2' 
-                        : 'bg-white text-black border-black hover:bg-gray-100 hover:translate-x-1'
+                        ? 'bg-black text-white border-black lg:translate-x-2' 
+                        : 'bg-white text-black border-black hover:bg-gray-100 lg:hover:translate-x-1'
                     }`}
                   >
-                    <link.icon className={`w-5 h-5 ${isActive ? 'text-[#00F5D4]' : 'text-black'}`} />
-                    <span className="uppercase text-sm tracking-widest">{link.label}</span>
+                    <link.icon className={`w-4 h-4 md:w-5 md:h-5 ${isActive ? 'text-[#00F5D4]' : 'text-black'}`} />
+                    <span className="uppercase text-[10px] sm:text-xs md:text-sm tracking-wider lg:tracking-widest">{link.label}</span>
                   </button>
                 )
               })}
             </div>
 
-            <div className="mt-12 pt-6 border-t-4 border-black">
+            <div className="hidden lg:block mt-12 pt-6 border-t-4 border-black">
               <p className="text-xs font-bold text-black uppercase mb-2">Logged in as</p>
               <p className="text-lg font-black text-black bg-[#00F5D4] p-2 border-2 border-black inline-block mb-4">
                 {derivedUsername}
@@ -199,7 +199,7 @@ export default function DashboardPage() {
         </aside>
 
         {/* MAIN CONTENT AREA */}
-        <section className="flex-1 animate-fade-in-up animate-delay-100 min-h-[600px]">
+        <section className="flex-1 w-full animate-fade-in-up animate-delay-100 min-h-[600px]">
           
           {!contractReady && (
             <div className="flex items-center gap-3 p-4 mb-8 bg-white border-4 border-black box-shadow-xl">
@@ -216,7 +216,7 @@ export default function DashboardPage() {
           {/* TAB: OVERVIEW */}
           {activeTab === 'overview' && (
             <div className="space-y-8 animate-fade-in-up">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
                 {/* Credit Score */}
                 <CreditScore
                   score={dynamicScore}
@@ -329,7 +329,7 @@ export default function DashboardPage() {
                           </span>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 mb-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-6">
                           <div className="bg-gray-100 p-3 border-2 border-black">
                             <p className="text-xs font-bold text-black uppercase">Borrowed</p>
                             <p className="text-xl font-black text-black">{loan.amount}</p>
@@ -382,16 +382,16 @@ export default function DashboardPage() {
                   <h3 className="text-xl font-black text-black uppercase mb-6">Complete Loan History</h3>
                   <div className="border-4 border-black bg-white flex flex-col neo-card">
                     {myLoans.map((loan, idx) => (
-                      <div key={loan.id} className={`flex items-center justify-between p-4 ${idx !== myLoans.length - 1 ? 'border-b-4 border-black' : ''} ${idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 flex items-center justify-center font-black text-lg border-4 border-black bg-yellow-300">
+                      <div key={loan.id} className={`flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 gap-2 sm:gap-4 ${idx !== myLoans.length - 1 ? 'border-b-3 md:border-b-4 border-black' : ''} ${idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center font-black text-sm md:text-lg border-3 md:border-4 border-black bg-yellow-300 shrink-0">
                             #{loan.id}
                           </div>
                           <div>
-                            <p className="text-lg font-black text-black">
+                            <p className="text-base md:text-lg font-black text-black">
                               {loan.amount} STRK
                             </p>
-                            <p className="text-xs font-bold text-black uppercase">
+                            <p className="text-[10px] md:text-xs font-bold text-black uppercase">
                               {loan.duration} Days • {loan.interestRate}% Interest
                             </p>
                           </div>
