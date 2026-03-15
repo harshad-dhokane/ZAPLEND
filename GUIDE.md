@@ -30,7 +30,7 @@ ZapLend is built on the **Starkzap SDK**, which means you don't need to worry ab
 4. Login using your passkey (Face ID/Fingerprint) or email
 5. Your wallet is now connected!
 
-![Wallet Connection](./frontend/public/screenshots/image.png)
+![Wallet Connection](./frontend/public/screenshots/help.png)
 
 ### 1.2 Getting Testnet STRK
 
@@ -75,7 +75,7 @@ Traditional DeFi loans require 120% collateral. With Social Collateral:
    - Your STRK will be deposited as initial collateral
    - Loan enters the marketplace with `Pending` status
 
-![Borrow Page](./frontend/public/screenshots/image%20copy.png)
+![Borrow Page](./frontend/public/screenshots/borrow.png)
 
 ### 2.3 Sharing Your Loan Request
 
@@ -103,7 +103,7 @@ Once created, your loan gets a unique URL:
    - **Search**: Find loans by borrower address
    - **Sort**: By amount, collateral, or time remaining
 
-![Marketplace](./frontend/public/screenshots/image%20copy%202.png)
+![Marketplace](./frontend/public/screenshots/marketplace.png)
 
 ### 3.2 Vouching for a Friend
 
@@ -121,7 +121,7 @@ When you find a loan you want to support:
    - Transaction processes via Cartridge Controller
    - Your vouch is recorded on-chain
 
-![Vouching](./frontend/public/screenshots/image%20copy%203.png)
+![Vouching](./frontend/public/screenshots/help.png)
 
 ### 3.3 Loan Activation
 
@@ -144,7 +144,7 @@ Your [Dashboard](https://zaplend.vercel.app/dashboard) is your personal command 
 - **Active Vouches**: STRK you've staked for others
 - **Credit Score**: Your on-chain reputation (300-1000)
 
-![Dashboard](./frontend/public/screenshots/image%20copy%205.png)
+![Dashboard](./frontend/public/screenshots/dashboard.png)
 
 ### 4.2 Your Loans
 
@@ -194,7 +194,7 @@ ZapLend integrates native STRK staking via the **Starkzap SDK**, allowing you to
 3. **View Pools**: Each validator may have multiple token pools
 4. **Compare Metrics**: Total staked, commission rates
 
-![Staking](./frontend/public/screenshots/image%20copy%207.png)
+![Staking](./frontend/public/screenshots/staking.png)
 
 ### 5.2 Staking Your STRK
 
@@ -258,7 +258,7 @@ The [Analytics](https://zaplend.vercel.app/analytics) page provides protocol-wid
 - **Total Borrowers**: Unique addresses
 - **Total Vouches**: Social collateral staked
 
-![Analytics](./frontend/public/screenshots/image%20copy%206.png)
+![Analytics](./frontend/public/screenshots/analytics.png)
 
 ### 6.2 Loan Performance
 
