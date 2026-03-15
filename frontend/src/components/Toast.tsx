@@ -71,13 +71,16 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
 
       {/* Toast container — Neo-Brutalism styled */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm">
+      <div 
+        className={`fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 p-4 transition-all duration-300
+          ${toasts.length > 0 ? 'bg-black/20 backdrop-blur-sm pointer-events-auto' : 'pointer-events-none'}`}
+      >
         {toasts.map((toast) => {
           const style = typeStyles[toast.type] || typeStyles.loading;
           return (
             <div
               key={toast.id}
-              className="flex items-start gap-3 p-4 animate-fade-in-up"
+              className="w-full max-w-md flex items-start gap-4 p-5 animate-fade-in-up"
               style={{
                 background: style.bg,
                 border: '4px solid #000',

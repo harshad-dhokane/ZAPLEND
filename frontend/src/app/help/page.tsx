@@ -7,7 +7,7 @@ import {
   Wallet, Users, Send, Shield, Clock, Coins, TrendingUp,
   ChevronDown, ChevronUp, Zap, HelpCircle, BookOpen, Calculator,
   ArrowRight, ExternalLink, CheckCircle2, AlertTriangle, QrCode,
-  Sparkles, Globe, Lock, MessageCircle
+  Sparkles, Globe, Lock, MessageCircle, ArrowDownToLine, Gift, ArrowUpFromLine
 } from 'lucide-react';
 
 interface FAQItem {
@@ -42,7 +42,7 @@ const faqs: FAQItem[] = [
   },
   {
     question: 'What is Staking, and how does it relate to lending?',
-    answer: 'While your STRK is sitting idle (e.g., waiting for vouches or between loans), you can stake it via Starkzap SDK validators to earn yield. It\'s a way to make your idle capital work for you instead of sitting in the contract.',
+    answer: 'While your STRK is waiting to be used for loans or vouches, you can stake it directly within ZapLend to earn yield. Powered by the Starkzap SDK, you can explore active validator pools, deposit your tokens to start earning rewards, claim those rewards at any time, and initiate unstaking (which involves a network cooldown) all from the dedicated Stake page.',
   },
   {
     question: 'What wallet do I need?',
@@ -203,6 +203,65 @@ export default function HelpPage() {
                     Go to page <ArrowRight className="w-4 h-4" />
                   </Link>
                 )}
+              </div>
+            ))}
+          </div>
+        </section>
+
+
+        {/* ═══ HOW TO STAKE ═══ */}
+        <section className="mb-20 animate-fade-in-up animate-delay-150">
+          <h2 className="text-3xl font-black font-display uppercase text-black mb-2 flex items-center gap-3">
+            <Coins className="w-7 h-7" /> Staking & Rewards
+          </h2>
+          <p className="text-base font-bold text-black mb-8">Make your idle STRK work for you with active staking.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                step: 1,
+                title: 'Explore Pools',
+                desc: 'On the Stake page, view live validator pools loaded dynamically via the Starkzap SDK. Choose a pool to see its total staked value.',
+                icon: Shield,
+                bg: '#FFD500',
+              },
+              {
+                step: 2,
+                title: 'Stake STRK',
+                desc: 'Click "Stake" on any pool, enter your amount, and confirm the gasless transaction. You\'ll start earning rewards immediately.',
+                icon: ArrowDownToLine,
+                bg: '#00F5D4',
+              },
+              {
+                step: 3,
+                title: 'Claim Rewards',
+                desc: 'Check your "My Position" tab to track your staked amount, commission rate, and earned rewards. Click "Claim" to withdraw rewards.',
+                icon: Gift,
+                bg: '#F72585',
+              },
+              {
+                step: 4,
+                title: 'Unstake Tokens',
+                desc: 'To withdraw, first declare your intent. After a network cooldown period expires, return to complete the withdrawal to your wallet.',
+                icon: ArrowUpFromLine,
+                bg: '#5A4BFF',
+                color: '#fff',
+              },
+            ].map(({ step, title, desc, icon: Icon, bg, color }) => (
+              <div
+                key={step}
+                className="neo-card p-6 relative overflow-hidden group"
+                style={{ background: bg, color: color || '#000' }}
+              >
+                <div className="absolute -right-6 -bottom-6 opacity-10 transform group-hover:scale-110 transition-transform duration-500">
+                  <Icon className="w-40 h-40" color={color || '#000'} />
+                </div>
+                
+                <h3 className="text-xl font-black uppercase mb-3 flex items-center gap-2">
+                  <span className="w-8 h-8 flex items-center justify-center bg-black text-white text-sm border-2 border-black" style={{ boxShadow: '2px 2px 0px rgba(0,0,0,0.3)' }}>{step}</span>
+                  {title}
+                </h3>
+                <p className="text-sm font-bold leading-relaxed relative z-10 opacity-90">{desc}</p>
               </div>
             ))}
           </div>

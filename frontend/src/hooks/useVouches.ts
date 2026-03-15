@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { callContract, LOAN_CONTRACT_ADDRESS, isContractConfigured } from '@/lib/starknet';
+import { callContract, LOAN_CONTRACT_ADDRESS, isContractConfigured, formatStrk, u256ToBigInt } from '@/lib/starknet';
 
 interface VouchData {
   friend: string;
@@ -29,14 +29,13 @@ export function useVouches(loanId: number) {
           for (let i = 0; i < count && (1 + i * 4 + 3) < result.length; i++) {
             const offset = 1 + i * 4;
             const friend = result[offset];
-            const amountLow = BigInt(result[offset + 1]);
-            const amountHigh = BigInt(result[offset + 2]);
-            const amount = amountLow + (amountHigh << 128n);
+            const amountBigInt = u256ToBigInt(result[offset + 1], result[offset + 2]);
             const timestamp = Number(BigInt(result[offset + 3]));
 
             vouches.push({
               friend,
-              amount: (Number(amount) / 1e18).toFixed(2),
+              // Use formatStrk to avoid precision loss from Number() division
+              amount: formatStrk(amountBigInt),
               timestamp,
             });
           }

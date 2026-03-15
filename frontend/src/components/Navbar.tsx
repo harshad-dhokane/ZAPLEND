@@ -12,6 +12,7 @@ const navItems = [
   { href: '/borrow', label: 'Borrow' },
   { href: '/lend', label: 'Lend' },
   { href: '/analytics', label: 'Analytics' },
+  { href: '/logs', label: 'Logs' },
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/stake', label: 'Stake' },
   { href: '/help', label: 'Help' },

@@ -3,16 +3,15 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { CreditScore } from '@/components/CreditScore';
-import { ActivityFeed } from '@/components/ActivityFeed';
 import { useStarkzap } from '@/providers/StarkzapProvider';
 import { useLoans } from '@/hooks/useLoans';
 import { useVouch } from '@/hooks/useVouch';
 import { useRepay } from '@/hooks/useRepay';
 import { useAllVouches } from '@/hooks/useAllVouches';
 import { isContractConfigured } from '@/lib/starknet';
-import { 
-  Wallet, Clock, Users, ArrowUpRight, TrendingUp, Shield, 
-  AlertTriangle, Inbox, LayoutDashboard, List, Activity 
+import {
+  Wallet, Clock, Users, ArrowUpRight, TrendingUp, Shield,
+  AlertTriangle, Inbox, LayoutDashboard, List, Activity
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -83,15 +82,15 @@ export default function DashboardPage() {
     // Generate a pseudo-random base score from the address string (e.g. between 450 and 650)
     let hash = 0;
     for (let i = 0; i < address.length; i++) {
-        hash = address.charCodeAt(i) + ((hash << 5) - hash);
+      hash = address.charCodeAt(i) + ((hash << 5) - hash);
     }
-    const baseScore = 450 + (Math.abs(hash) % 200); 
-    
+    const baseScore = 450 + (Math.abs(hash) % 200);
+
     // Add performance modifiers
     const activeBonus = activeLoans.length * 10;
     const repaidBonus = repaidCount * 75;
     const defaultPenalty = defaultedCount * 150;
-    
+
     return Math.min(1000, Math.max(300, baseScore + activeBonus + repaidBonus - defaultPenalty));
   }, [address, activeLoans.length, repaidCount, defaultedCount]);
 
@@ -127,7 +126,6 @@ export default function DashboardPage() {
     { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
     { id: 'my-loans', icon: Clock, label: 'My Loans & History' },
     { id: 'pending-vouches', icon: Users, label: 'Pending Vouches' },
-    { id: 'activity', icon: Activity, label: 'Live Activity' },
   ] as const;
 
   if (!isConnected) {
@@ -156,14 +154,14 @@ export default function DashboardPage() {
       <Navbar />
 
       <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-8 pt-6 md:pt-12 pb-24 flex flex-col lg:flex-row gap-6 md:gap-8 items-start w-full">
-        
+
         {/* SIDEBAR */}
         <aside className="w-full lg:w-72 shrink-0 animate-fade-in-up">
           <div className="neo-card p-4 md:p-6 w-full">
             <h2 className="text-lg md:text-xl font-black uppercase mb-4 md:mb-6 text-black border-b-3 md:border-b-4 border-black pb-3 md:pb-4 text-center lg:text-left">
               DASHBOARD
             </h2>
-            
+
             <div className="grid grid-cols-2 lg:flex lg:flex-col gap-2 md:gap-3 pb-2 lg:pb-0">
               {sidebarLinks.map((link) => {
                 const isActive = activeTab === link.id;
@@ -171,14 +169,13 @@ export default function DashboardPage() {
                   <button
                     key={link.id}
                     onClick={() => setActiveTab(link.id)}
-                    className={`flex items-center justify-center lg:justify-start gap-1.5 md:gap-3 w-full p-2.5 md:p-4 font-bold border-2 transition-all shrink-0 ${
-                      isActive 
-                        ? 'bg-black text-white border-black lg:translate-x-2' 
+                    className={`flex items-center justify-start gap-2 md:gap-3 w-full p-2 md:p-3 font-bold border-2 transition-all shrink-0 ${isActive
+                        ? 'bg-black text-white border-black lg:translate-x-2'
                         : 'bg-white text-black border-black hover:bg-gray-100 lg:hover:translate-x-1'
-                    }`}
+                      }`}
                   >
-                    <link.icon className={`w-4 h-4 md:w-5 md:h-5 ${isActive ? 'text-[#00F5D4]' : 'text-black'}`} />
-                    <span className="uppercase text-[10px] sm:text-xs md:text-sm tracking-wider lg:tracking-widest">{link.label}</span>
+                    <link.icon className={`w-4 h-4 md:w-5 md:h-5 shrink-0 ${isActive ? 'text-[#00F5D4]' : 'text-black'}`} />
+                    <span className="uppercase text-[10px] sm:text-xs md:text-sm tracking-wider lg:tracking-widest whitespace-nowrap text-left">{link.label}</span>
                   </button>
                 )
               })}
@@ -189,7 +186,7 @@ export default function DashboardPage() {
               <p className="text-lg font-black text-black bg-[#00F5D4] p-2 border-2 border-black inline-block mb-4">
                 {derivedUsername}
               </p>
-              
+
               <p className="text-xs font-bold text-black uppercase mb-2">Connected Address</p>
               <p className="text-xs font-bold font-mono text-black bg-yellow-300 p-2 border-2 border-black break-all">
                 {address}
@@ -200,7 +197,7 @@ export default function DashboardPage() {
 
         {/* MAIN CONTENT AREA */}
         <section className="flex-1 w-full animate-fade-in-up animate-delay-100 min-h-[600px]">
-          
+
           {!contractReady && (
             <div className="flex items-center gap-3 p-4 mb-8 bg-white border-4 border-black box-shadow-xl">
               <AlertTriangle className="w-6 h-6 shrink-0 text-red-500" />
@@ -268,15 +265,15 @@ export default function DashboardPage() {
                       const target = parseFloat(loan.socialCollateralTarget.replace(/,/g, ''));
                       const current = parseFloat(loan.socialCollateralCurrent.replace(/,/g, ''));
                       const progress = target > 0 ? (current / target) * 100 : 0;
-                      
+
                       return (
-                        <div key={loan.id} className="neo-card p-6 border-dashed border-[#FF007F]">
-                          <div className="flex justify-between items-start mb-6">
+                        <div key={loan.id} className="neo-card p-4 md:p-5 border-dashed border-[#FF007F]">
+                          <div className="flex justify-between items-start mb-4">
                             <div>
-                              <h3 className="text-2xl font-black text-black uppercase">
+                              <h3 className="text-xl font-black text-black uppercase">
                                 Loan #{loan.id}
                               </h3>
-                              <p className="text-sm font-bold text-black bg-gray-100 inline-block px-2 py-1 border-2 border-black mt-2">
+                              <p className="text-xs font-bold text-black bg-gray-100 inline-block px-2 py-1 border-2 border-black mt-1">
                                 Amount: {loan.amount} STRK
                               </p>
                             </div>
@@ -285,8 +282,8 @@ export default function DashboardPage() {
                             </span>
                           </div>
 
-                          <div className="mb-4 p-4 border-4 border-black bg-white">
-                            <div className="flex justify-between text-sm mb-2 font-black uppercase text-black">
+                          <div className="mb-2 p-3 border-4 border-black bg-white">
+                            <div className="flex justify-between text-xs mb-1 font-black uppercase text-black">
                               <span>Vouch Progress</span>
                               <span>{progress.toFixed(0)}%</span>
                             </div>
@@ -314,13 +311,13 @@ export default function DashboardPage() {
                     const progress = totalDue > 0 ? (repaid / totalDue) * 100 : 0;
 
                     return (
-                      <div key={loan.id} className="neo-card p-6 hover-lift">
-                        <div className="flex justify-between items-start mb-6">
+                      <div key={loan.id} className="neo-card p-4 md:p-5 hover-lift">
+                        <div className="flex justify-between items-start mb-4">
                           <div>
-                            <h3 className="text-2xl font-black text-black uppercase">
+                            <h3 className="text-xl font-black text-black uppercase">
                               Loan #{loan.id}
                             </h3>
-                            <p className="text-sm font-bold text-black bg-yellow-300 inline-block px-2 py-1 border-2 border-black mt-2">
+                            <p className="text-xs font-bold text-black bg-yellow-300 inline-block px-2 py-1 border-2 border-black mt-1">
                               Duration: {loan.duration} days
                             </p>
                           </div>
@@ -329,27 +326,27 @@ export default function DashboardPage() {
                           </span>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-6">
-                          <div className="bg-gray-100 p-3 border-2 border-black">
-                            <p className="text-xs font-bold text-black uppercase">Borrowed</p>
-                            <p className="text-xl font-black text-black">{loan.amount}</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3 mb-4 md:mb-5">
+                          <div className="bg-gray-100 p-2 md:p-3 border-2 border-black">
+                            <p className="text-[10px] md:text-xs font-bold text-black uppercase">Borrowed</p>
+                            <p className="text-lg font-black text-black">{loan.amount}</p>
                           </div>
-                          <div className="bg-yellow-100 p-3 border-2 border-black">
-                            <p className="text-xs font-bold text-black uppercase">Remaining</p>
-                            <p className="text-xl font-black text-black">{remaining.toFixed(2)}</p>
+                          <div className="bg-yellow-100 p-2 md:p-3 border-2 border-black">
+                            <p className="text-[10px] md:text-xs font-bold text-black uppercase">Remaining</p>
+                            <p className="text-lg font-black text-black">{remaining.toFixed(2)}</p>
                           </div>
-                          <div className="bg-[#FF007F]/10 p-3 border-2 border-black">
-                            <p className="text-xs font-bold text-black uppercase">Total Due</p>
-                            <p className="text-xl font-black text-black">{totalDue.toFixed(2)}</p>
+                          <div className="bg-[#FF007F]/10 p-2 md:p-3 border-2 border-black">
+                            <p className="text-[10px] md:text-xs font-bold text-black uppercase">Total Due</p>
+                            <p className="text-lg font-black text-black">{totalDue.toFixed(2)}</p>
                           </div>
                         </div>
 
-                        <div className="mb-6 p-4 border-4 border-black">
-                          <div className="flex justify-between text-sm mb-2 font-black uppercase text-black">
+                        <div className="mb-4 p-3 md:p-4 border-4 border-black">
+                          <div className="flex justify-between text-xs mb-1 font-black uppercase text-black">
                             <span>Repayment Progress</span>
                             <span>{progress.toFixed(0)}%</span>
                           </div>
-                          <div className="h-4 bg-gray-200 border-2 border-black w-full relative">
+                          <div className="h-3 bg-gray-200 border-2 border-black w-full relative">
                             <div className="absolute top-0 left-0 h-full bg-[#FF007F] border-r-2 border-black" style={{ width: `${progress}%` }} />
                           </div>
                         </div>
@@ -359,7 +356,7 @@ export default function DashboardPage() {
                           disabled={isRepaying}
                           className="w-full py-4 text-xl font-black uppercase transition-transform hover:-translate-y-1"
                           style={{
-                            background: '#00F5D4', color: '#000', border: '4px solid #000', 
+                            background: '#00F5D4', color: '#000', border: '4px solid #000',
                             boxShadow: '4px 4px 0px #000', opacity: isRepaying ? 0.6 : 1
                           }}
                         >
@@ -396,11 +393,10 @@ export default function DashboardPage() {
                             </p>
                           </div>
                         </div>
-                        <span className={`px-3 py-1 font-black uppercase text-xs border-2 border-black ${
-                          loan.status === 'Repaid' ? 'bg-[#00F5D4] text-black' :
-                          loan.status === 'Active' ? 'bg-yellow-300 text-black' :
-                          loan.status === 'Defaulted' ? 'bg-[#FF007F] text-white' : 'bg-white text-black'
-                        }`}>
+                        <span className={`px-3 py-1 font-black uppercase text-xs border-2 border-black ${loan.status === 'Repaid' ? 'bg-[#00F5D4] text-black' :
+                            loan.status === 'Active' ? 'bg-yellow-300 text-black' :
+                              loan.status === 'Defaulted' ? 'bg-[#FF007F] text-white' : 'bg-white text-black'
+                          }`}>
                           {loan.status}
                         </span>
                       </div>
@@ -432,7 +428,7 @@ export default function DashboardPage() {
                             Borrower: {loan.borrower.slice(0, 8)}...
                           </p>
                         </div>
-                        
+
                         <div className="p-4 bg-white border-4 border-black mb-6">
                           <p className="text-3xl font-black text-black">{remaining.toFixed(2)} <span className="text-sm">STRK needed</span></p>
                           <p className="text-xs font-bold text-black uppercase mt-1">
@@ -461,19 +457,6 @@ export default function DashboardPage() {
                   <p className="text-xl font-black text-black uppercase">No vouch requests at this time.</p>
                 </div>
               )}
-            </div>
-          )}
-
-          {/* TAB: ACTIVITY HISTORY */}
-          {activeTab === 'activity' && (
-            <div className="space-y-8 animate-fade-in-up">
-              <h2 className="text-3xl font-black text-black uppercase border-b-4 border-black pb-4 mb-8 flex items-center gap-3">
-                <Activity className="w-8 h-8 text-[#00F5D4]" /> Live Network Activity
-              </h2>
-              <p className="text-sm font-bold text-black uppercase mb-6 bg-yellow-300 inline-block px-3 py-1 border-2 border-black">
-                Real-time feed of all platform events
-              </p>
-              <ActivityFeed />
             </div>
           )}
 

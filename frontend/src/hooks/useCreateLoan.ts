@@ -34,8 +34,8 @@ export function useCreateLoan() {
 
     const toastId = showToast({
       type: 'loading',
-      title: 'Creating Loan',
-      message: 'Approving STRK token and creating loan...',
+      title: 'Preparing Loan',
+      message: 'Running preflight checks...',
     });
 
     try {
@@ -44,46 +44,128 @@ export function useCreateLoan() {
       const socialWei = parseStrk(socialCollateral);
       const durationSeconds = durationDays * 86400;
 
-      // Step 1: Approve STRK token for collateral
-      // Step 2: Create loan
-      // Both calls batched atomically
-      const tx = await wallet.execute([
-        // ERC20 approve
-        {
-          contractAddress: STRK_TOKEN_ADDRESS,
-          entrypoint: 'approve',
-          calldata: [
-            LOAN_CONTRACT_ADDRESS,
-            collateralWei.toString(), '0', // u256 low, high
-          ],
-        },
-        // Create loan
-        {
-          contractAddress: LOAN_CONTRACT_ADDRESS,
-          entrypoint: 'create_loan',
-          calldata: [
-            amountWei.toString(), '0',       // amount u256
-            collateralWei.toString(), '0',   // collateral u256
-            socialWei.toString(), '0',       // social_collateral_target u256
-            durationSeconds.toString(),       // duration u64
-          ],
-        },
-      ]);
+      // Build the transaction using TxBuilder fluent API
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const walletAny = wallet as any;
 
-      // Wait for transaction confirmation
-      await tx.wait();
+      // Check if TxBuilder is available
+      if (typeof walletAny.tx === 'function') {
+        const builder = walletAny
+          .tx()
+          .add(
+            // ERC20 approve
+            {
+              contractAddress: STRK_TOKEN_ADDRESS,
+              entrypoint: 'approve',
+              calldata: [
+                LOAN_CONTRACT_ADDRESS,
+                collateralWei.toString(), '0',
+              ],
+            },
+            // Create loan
+            {
+              contractAddress: LOAN_CONTRACT_ADDRESS,
+              entrypoint: 'create_loan',
+              calldata: [
+                amountWei.toString(), '0',
+                collateralWei.toString(), '0',
+                socialWei.toString(), '0',
+                durationSeconds.toString(),
+              ],
+            },
+          );
 
-      updateToast(toastId, {
-        type: 'success',
-        title: 'Loan Created!',
-        message: 'Your loan request is now live on-chain.',
-        txHash: tx.hash,
-      });
+        // Preflight check — validate the tx will succeed before sending
+        try {
+          const preflight = await builder.preflight();
+          if (!preflight.ok) {
+            const reason = preflight.reason || 'Transaction simulation failed';
+            setError(reason);
+            updateToast(toastId, {
+              type: 'error',
+              title: 'Preflight Failed',
+              message: `Transaction would fail: ${reason}`,
+            });
+            return null;
+          }
+        } catch (preflightErr) {
+          // Preflight may not be supported; continue without it
+          console.warn('Preflight check skipped:', preflightErr);
+        }
 
-      // Invalidate loan cache to refetch
-      queryClient.invalidateQueries({ queryKey: ['loans'] });
+        // Estimate fee and show to user
+        try {
+          const feeEstimate = await builder.estimateFee();
+          const feeStr = feeEstimate?.overall_fee
+            ? `~${(Number(feeEstimate.overall_fee) / 1e18).toFixed(6)} STRK`
+            : 'minimal';
+          updateToast(toastId, {
+            type: 'loading',
+            title: 'Creating Loan',
+            message: `Sending transaction (est. fee: ${feeStr})...`,
+          });
+        } catch {
+          updateToast(toastId, {
+            type: 'loading',
+            title: 'Creating Loan',
+            message: 'Sending transaction...',
+          });
+        }
 
-      return { transaction_hash: tx.hash };
+        // Send via TxBuilder
+        const tx = await builder.send();
+        await tx.wait();
+
+        updateToast(toastId, {
+          type: 'success',
+          title: 'Loan Created!',
+          message: 'Your loan request is now live on-chain.',
+          txHash: tx.hash,
+        });
+
+        queryClient.invalidateQueries({ queryKey: ['loans'] });
+        return { transaction_hash: tx.hash };
+      } else {
+        // Fallback: use raw wallet.execute() if TxBuilder not available
+        updateToast(toastId, {
+          type: 'loading',
+          title: 'Creating Loan',
+          message: 'Approving STRK token and creating loan...',
+        });
+
+        const tx = await wallet.execute([
+          {
+            contractAddress: STRK_TOKEN_ADDRESS,
+            entrypoint: 'approve',
+            calldata: [
+              LOAN_CONTRACT_ADDRESS,
+              collateralWei.toString(), '0',
+            ],
+          },
+          {
+            contractAddress: LOAN_CONTRACT_ADDRESS,
+            entrypoint: 'create_loan',
+            calldata: [
+              amountWei.toString(), '0',
+              collateralWei.toString(), '0',
+              socialWei.toString(), '0',
+              durationSeconds.toString(),
+            ],
+          },
+        ]);
+
+        await tx.wait();
+
+        updateToast(toastId, {
+          type: 'success',
+          title: 'Loan Created!',
+          message: 'Your loan request is now live on-chain.',
+          txHash: tx.hash,
+        });
+
+        queryClient.invalidateQueries({ queryKey: ['loans'] });
+        return { transaction_hash: tx.hash };
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to create loan';
       setError(message);

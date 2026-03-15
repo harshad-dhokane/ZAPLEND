@@ -45,7 +45,8 @@ export function StarkzapProvider({ children }: { children: ReactNode }) {
       });
 
       // Build policies for the contract methods
-      const policies: Array<{ target: string; method: string }> = [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const policies: Array<Record<string, any>> = [];
 
       if (LOAN_CONTRACT && LOAN_CONTRACT.length > 2) {
         policies.push(
@@ -56,15 +57,21 @@ export function StarkzapProvider({ children }: { children: ReactNode }) {
         );
       }
 
-      // Always allow STRK token approvals
+      // STRK token policies with spender/amount to avoid deprecation warning
       policies.push(
-        { target: STRK_TOKEN, method: 'approve' },
+        {
+          target: STRK_TOKEN,
+          method: 'approve',
+          spender: LOAN_CONTRACT || undefined,
+          amount: '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
+        },
         { target: STRK_TOKEN, method: 'transfer' },
       );
 
       const result = await sdk.onboard({
         strategy: OnboardStrategy.Cartridge,
-        cartridge: { policies },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        cartridge: { policies: policies as any },
       });
 
       // The SDK wallet implements WalletInterface with proper execute(), etc.
@@ -147,9 +154,14 @@ export function StarkzapProvider({ children }: { children: ReactNode }) {
     try {
       const stored = sessionStorage.getItem(SESSION_KEY);
       if (stored) {
+        // Set connecting immediately to prevent race with manual connect
+        setIsConnecting(true);
         // Cartridge Controller persists its own session keys,
         // so re-calling connect() will silently reconnect without showing a modal
-        connect();
+        connect().catch(() => {
+          // If auto-reconnect fails, user can still connect manually
+          setIsConnecting(false);
+        });
       }
     } catch {
       // sessionStorage unavailable

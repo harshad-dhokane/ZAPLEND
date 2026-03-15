@@ -15,12 +15,21 @@ export function useBalance() {
       }
 
       try {
-        // Use Starkzap SDK's built-in ERC20 helper
-        const amount = await wallet.balanceOf(sepoliaTokens.STRK) as any;
-        
+        // Use Starkzap SDK's built-in ERC20 helper — returns an Amount object
+        const amount = await wallet.balanceOf(sepoliaTokens.STRK);
+
+        // The SDK Amount class has .toFormatted() and .toBase() methods
+        const formatted = typeof amount.toFormatted === 'function'
+          ? amount.toFormatted()
+          : String(amount);
+
+        const raw = typeof amount.toBase === 'function'
+          ? amount.toBase()
+          : 0n;
+
         return {
-          balance: amount.toFormatted ? amount.toFormatted() : String(amount.amount || amount),
-          balanceRaw: amount.val || amount.value || amount.amount || 0n,
+          balance: formatted,
+          balanceRaw: raw,
         };
       } catch (err) {
         console.error('Failed to fetch balance via Starkzap SDK:', err);

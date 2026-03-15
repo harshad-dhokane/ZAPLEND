@@ -29,15 +29,16 @@ export function useVouch() {
 
     const toastId = showToast({
       type: 'loading',
-      title: 'Vouching',
-      message: `Staking ${amount} STRK as social collateral for Loan #${loanId}...`,
+      title: 'Preparing Vouch',
+      message: 'Running preflight checks...',
     });
 
     try {
       const amountWei = parseStrk(amount);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const walletAny = wallet as any;
 
-      // Batch: approve + vouch
-      const tx = await wallet.execute([
+      const calls = [
         {
           contractAddress: STRK_TOKEN_ADDRESS,
           entrypoint: 'approve',
@@ -50,24 +51,93 @@ export function useVouch() {
           contractAddress: LOAN_CONTRACT_ADDRESS,
           entrypoint: 'add_vouch',
           calldata: [
-            loanId, '0',                    // loan_id u256
-            amountWei.toString(), '0',       // amount u256
+            loanId, '0',
+            amountWei.toString(), '0',
           ],
         },
-      ]);
+      ];
 
-      await tx.wait();
+      if (typeof walletAny.tx === 'function') {
+        const builder = walletAny.tx().add(...calls);
 
-      updateToast(toastId, {
-        type: 'success',
-        title: 'Vouch Successful!',
-        message: `You staked ${amount} STRK for Loan #${loanId}.`,
-        txHash: tx.hash,
-      });
+        // Preflight check
+        try {
+          const preflight = await builder.preflight();
+          if (!preflight.ok) {
+            const reason = preflight.reason || 'Transaction simulation failed';
+            setError(reason);
+            updateToast(toastId, {
+              type: 'error',
+              title: 'Preflight Failed',
+              message: `Vouch would fail: ${reason}`,
+            });
+            return null;
+          }
+        } catch {
+          console.warn('Preflight check skipped');
+        }
 
-      queryClient.invalidateQueries({ queryKey: ['loans'] });
+        // Fee estimation
+        try {
+          const feeEstimate = await builder.estimateFee();
+          const feeStr = feeEstimate?.overall_fee
+            ? `~${(Number(feeEstimate.overall_fee) / 1e18).toFixed(6)} STRK`
+            : 'minimal';
+          updateToast(toastId, {
+            type: 'loading',
+            title: 'Vouching',
+            message: `Staking ${amount} STRK for Loan #${loanId} (est. fee: ${feeStr})...`,
+          });
+        } catch {
+          updateToast(toastId, {
+            type: 'loading',
+            title: 'Vouching',
+            message: `Staking ${amount} STRK as social collateral for Loan #${loanId}...`,
+          });
+        }
 
-      return { transaction_hash: tx.hash };
+        const tx = await builder.send();
+        await tx.wait();
+
+        updateToast(toastId, {
+          type: 'success',
+          title: 'Vouch Successful!',
+          message: `You staked ${amount} STRK for Loan #${loanId}.`,
+          txHash: tx.hash,
+        });
+
+        // Invalidate both loans AND vouches caches
+        queryClient.invalidateQueries({ queryKey: ['loans'] });
+        queryClient.invalidateQueries({ queryKey: ['vouches'] });
+        queryClient.invalidateQueries({ queryKey: ['all-vouches'] });
+        queryClient.invalidateQueries({ queryKey: ['balance'] });
+
+        return { transaction_hash: tx.hash };
+      } else {
+        // Fallback to raw execute
+        updateToast(toastId, {
+          type: 'loading',
+          title: 'Vouching',
+          message: `Staking ${amount} STRK as social collateral for Loan #${loanId}...`,
+        });
+
+        const tx = await wallet.execute(calls);
+        await tx.wait();
+
+        updateToast(toastId, {
+          type: 'success',
+          title: 'Vouch Successful!',
+          message: `You staked ${amount} STRK for Loan #${loanId}.`,
+          txHash: tx.hash,
+        });
+
+        queryClient.invalidateQueries({ queryKey: ['loans'] });
+        queryClient.invalidateQueries({ queryKey: ['vouches'] });
+        queryClient.invalidateQueries({ queryKey: ['all-vouches'] });
+        queryClient.invalidateQueries({ queryKey: ['balance'] });
+
+        return { transaction_hash: tx.hash };
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to vouch';
       setError(message);

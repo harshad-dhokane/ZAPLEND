@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { callContract, LOAN_CONTRACT_ADDRESS, isContractConfigured } from '@/lib/starknet';
+import { callContract, LOAN_CONTRACT_ADDRESS, isContractConfigured, formatStrk, u256ToBigInt } from '@/lib/starknet';
 
 interface VouchData {
   loanId: string;
@@ -17,8 +17,6 @@ export function useAllVouches(loanCount: number) {
       if (!isContractConfigured() || !LOAN_CONTRACT_ADDRESS || loanCount <= 0) return [];
 
       try {
-        // Since there is no on-chain 'get_all_vouches' method, we simulate it by fetching globally
-        // This is only practical for small N, but necessary here to see if users already vouched.
         const promises = [];
         for (let i = 1; i <= loanCount; i++) {
           promises.push(
@@ -38,15 +36,14 @@ export function useAllVouches(loanCount: number) {
             for (let i = 0; i < count && (1 + i * 4 + 3) < result.length; i++) {
               const offset = 1 + i * 4;
               const friend = result[offset];
-              const amountLow = BigInt(result[offset + 1]);
-              const amountHigh = BigInt(result[offset + 2]);
-              const amount = amountLow + (amountHigh << 128n);
+              // Use u256ToBigInt + formatStrk to avoid precision loss
+              const amountBigInt = u256ToBigInt(result[offset + 1], result[offset + 2]);
               const timestamp = Number(BigInt(result[offset + 3]));
 
               allVouches.push({
                 loanId,
                 friend,
-                amount: (Number(amount) / 1e18).toFixed(2),
+                amount: formatStrk(amountBigInt),
                 timestamp,
               });
             }
@@ -60,6 +57,6 @@ export function useAllVouches(loanCount: number) {
       }
     },
     enabled: isContractConfigured() && loanCount > 0,
-    refetchInterval: 10_000,
+    refetchInterval: 15_000, // Slightly slower to reduce RPC pressure
   });
 }
