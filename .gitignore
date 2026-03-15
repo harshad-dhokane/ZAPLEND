@@ -1,0 +1,5 @@
+
+# Credentials (contains private keys)
+contracts/CREDENTIALS.env
+contracts/deployer/
+.env.local

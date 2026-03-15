@@ -1,0 +1,1 @@
+{"version":1,"contracts":[{"id":"98t6paqe0c9uc","package_name":"zaplend","contract_name":"LoanContract","module_path":"zaplend::loan::LoanContract","artifacts":{"sierra":"zaplend_LoanContract.contract_class.json","casm":"zaplend_LoanContract.compiled_contract_class.json"}}]}

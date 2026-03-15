@@ -1,0 +1,752 @@
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://10.233.199.199:3001
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 1079ms
+○ Compiling / ...
+ GET / 200 in 2.4s (compile: 1964ms, render: 469ms)
+ GET /borrow 200 in 953ms (compile: 903ms, render: 50ms)
+ GET /lend 200 in 837ms (compile: 807ms, render: 29ms)
+ GET /dashboard 200 in 986ms (compile: 960ms, render: 26ms)
+ GET /lend 200 in 69ms (compile: 21ms, render: 48ms)
+ GET /borrow 200 in 43ms (compile: 6ms, render: 37ms)
+ GET / 200 in 180ms (compile: 37ms, render: 143ms)
+ GET /lend 200 in 274ms (compile: 17ms, render: 257ms)
+ GET /lend 200 in 37ms (compile: 10ms, render: 27ms)
+ GET /dashboard 200 in 55ms (compile: 12ms, render: 43ms)
+ GET /lend 200 in 109ms (compile: 11ms, render: 98ms)
+ GET /dashboard 200 in 129ms (compile: 13ms, render: 116ms)
+ GET /lend 200 in 35ms (compile: 8ms, render: 28ms)
+ GET /borrow 200 in 283ms (compile: 48ms, render: 235ms)
+ GET /lend 200 in 32ms (compile: 9ms, render: 23ms)
+ GET /dashboard 200 in 30ms (compile: 10ms, render: 20ms)
+✓ Compiled in 943ms
+ GET /lend 200 in 46ms (compile: 16ms, render: 31ms)
+ GET /lend 200 in 69ms (compile: 10ms, render: 59ms)
+✓ Compiled in 394ms
+ GET / 200 in 89ms (compile: 15ms, render: 74ms)
+ GET /borrow 200 in 55ms (compile: 23ms, render: 32ms)
+ GET /lend 200 in 313ms (compile: 257ms, render: 56ms)
+ GET /dashboard 200 in 47ms (compile: 20ms, render: 27ms)
+ GET /borrow 200 in 158ms (compile: 98ms, render: 61ms)
+✓ Compiled in 8ms
+ GET /lend 200 in 43ms (compile: 11ms, render: 32ms)
+ GET /dashboard 200 in 53ms (compile: 9ms, render: 44ms)
+✓ Compiled in 109ms
+ GET /lend 200 in 45ms (compile: 10ms, render: 35ms)
+ GET /borrow 200 in 176ms (compile: 119ms, render: 57ms)
+ GET /lend 200 in 50ms (compile: 26ms, render: 24ms)
+ GET /dashboard 200 in 43ms (compile: 7ms, render: 36ms)
+○ Compiling /loan/[id] ...
+ GET /loan/1 200 in 4.2s (compile: 4.1s, render: 32ms)
+✓ Compiled in 189ms
+ GET /lend 200 in 58ms (compile: 23ms, render: 35ms)
+✓ Compiled in 57ms
+✓ Compiled in 94ms
+ GET /dashboard 200 in 168ms (compile: 123ms, render: 45ms)
+ GET /loan/1 200 in 238ms (compile: 189ms, render: 49ms)
+ GET /lend 200 in 156ms (compile: 111ms, render: 45ms)
+ GET /dashboard 200 in 42ms (compile: 7ms, render: 35ms)
+ GET /lend 200 in 33ms (compile: 10ms, render: 23ms)
+ GET /borrow 200 in 169ms (compile: 115ms, render: 54ms)
+ GET /lend 200 in 27ms (compile: 7ms, render: 19ms)
+ GET /dashboard 200 in 29ms (compile: 8ms, render: 22ms)
+✓ Compiled in 160ms
+✓ Compiled in 198ms
+✓ Compiled in 101ms
+ GET /lend 200 in 274ms (compile: 195ms, render: 79ms)
+ GET /borrow 200 in 191ms (compile: 130ms, render: 61ms)
+ GET /borrow 200 in 383ms (compile: 13ms, render: 369ms)
+ GET /lend 200 in 59ms (compile: 12ms, render: 48ms)
+ GET /dashboard 200 in 168ms (compile: 132ms, render: 35ms)
+ GET /dashboard 200 in 957ms (compile: 175ms, render: 782ms)
+✓ Compiled in 648ms
+ GET /borrow 200 in 104ms (compile: 58ms, render: 46ms)
+ GET /lend 200 in 76ms (compile: 32ms, render: 43ms)
+ GET /dashboard 200 in 59ms (compile: 33ms, render: 26ms)
+✓ Compiled in 456ms
+✓ Compiled in 142ms
+ GET /dashboard 200 in 252ms (compile: 131ms, render: 122ms)
+ GET /dashboard 200 in 165ms (compile: 3ms, render: 162ms)
+ GET /dashboard 200 in 142ms (compile: 3ms, render: 139ms)
+ GET /dashboard 200 in 112ms (compile: 6ms, render: 105ms)
+ GET /dashboard 200 in 86ms (compile: 5ms, render: 81ms)
+ GET /borrow 200 in 159ms (compile: 108ms, render: 51ms)
+ GET /lend 200 in 127ms (compile: 87ms, render: 40ms)
+ GET /dashboard 200 in 29ms (compile: 6ms, render: 23ms)
+ GET /lend 200 in 26ms (compile: 4ms, render: 23ms)
+✓ Compiled in 473ms
+ GET /dashboard 200 in 149ms (compile: 110ms, render: 39ms)
+ GET /borrow 200 in 156ms (compile: 109ms, render: 47ms)
+ GET /lend 200 in 153ms (compile: 106ms, render: 47ms)
+ GET /dashboard 200 in 52ms (compile: 5ms, render: 46ms)
+ GET /borrow 200 in 39ms (compile: 7ms, render: 32ms)
+ GET /borrow 200 in 364ms (compile: 6ms, render: 358ms)
+ GET /lend 200 in 51ms (compile: 7ms, render: 44ms)
+ GET /dashboard 200 in 60ms (compile: 11ms, render: 48ms)
+ GET /lend 200 in 47ms (compile: 7ms, render: 41ms)
+ GET /borrow 200 in 53ms (compile: 8ms, render: 45ms)
+ GET /lend 200 in 28ms (compile: 5ms, render: 24ms)
+✓ Compiled in 428ms
+ GET /borrow 200 in 76ms (compile: 15ms, render: 61ms)
+ GET /dashboard 200 in 62ms (compile: 22ms, render: 40ms)
+ GET /borrow 200 in 28ms (compile: 9ms, render: 19ms)
+ GET /dashboard 200 in 41ms (compile: 9ms, render: 33ms)
+ GET /lend 200 in 39ms (compile: 9ms, render: 30ms)
+ GET /borrow 200 in 40ms (compile: 14ms, render: 26ms)
+✓ Compiled in 236ms
+ GET /lend 200 in 186ms (compile: 148ms, render: 38ms)
+ GET /dashboard 200 in 187ms (compile: 112ms, render: 75ms)
+ GET /lend 200 in 30ms (compile: 10ms, render: 20ms)
+ GET /borrow 200 in 158ms (compile: 118ms, render: 40ms)
+ GET /lend 200 in 44ms (compile: 6ms, render: 39ms)
+ GET /lend 200 in 364ms (compile: 11ms, render: 354ms)
+ GET /dashboard 200 in 53ms (compile: 10ms, render: 43ms)
+✓ Compiled in 100ms
+ GET /lend 200 in 755ms (compile: 603ms, render: 151ms)
+ GET /borrow 200 in 76ms (compile: 25ms, render: 51ms)
+✓ Compiled in 310ms
+ GET /dashboard 200 in 72ms (compile: 12ms, render: 59ms)
+ GET /borrow 200 in 43ms (compile: 19ms, render: 24ms)
+ GET /lend 200 in 162ms (compile: 118ms, render: 44ms)
+ GET /dashboard 200 in 113ms (compile: 86ms, render: 27ms)
+ GET /loan/1 200 in 727ms (compile: 513ms, render: 213ms)
+ GET /lend 200 in 30ms (compile: 10ms, render: 20ms)
+✓ Compiled in 124ms
+ GET /dashboard 200 in 181ms (compile: 66ms, render: 116ms)
+ GET /borrow 200 in 233ms (compile: 187ms, render: 46ms)
+ GET /lend 200 in 58ms (compile: 22ms, render: 36ms)
+✓ Compiled in 339ms
+ GET /dashboard 200 in 151ms (compile: 113ms, render: 38ms)
+ GET /loan/1 200 in 145ms (compile: 99ms, render: 46ms)
+ GET /lend 200 in 51ms (compile: 10ms, render: 41ms)
+ GET /dashboard 200 in 55ms (compile: 7ms, render: 49ms)
+✓ Compiled in 97ms
+ GET /borrow 200 in 94ms (compile: 24ms, render: 70ms)
+ GET /lend 200 in 33ms (compile: 5ms, render: 28ms)
+ GET /dashboard 200 in 221ms (compile: 157ms, render: 64ms)
+✓ Compiled in 171ms
+ GET /lend 200 in 27ms (compile: 7ms, render: 20ms)
+ GET /borrow 200 in 39ms (compile: 5ms, render: 33ms)
+ GET /lend 200 in 41ms (compile: 9ms, render: 33ms)
+ GET /dashboard 200 in 229ms (compile: 184ms, render: 45ms)
+ GET /lend 200 in 36ms (compile: 6ms, render: 30ms)
+ GET /borrow 200 in 32ms (compile: 6ms, render: 26ms)
+ GET /lend 200 in 59ms (compile: 17ms, render: 42ms)
+ GET /dashboard 200 in 44ms (compile: 4ms, render: 40ms)
+ GET /borrow 200 in 48ms (compile: 6ms, render: 42ms)
+✓ Compiled in 201ms
+✓ Compiled in 97ms
+ GET /lend 200 in 214ms (compile: 172ms, render: 43ms)
+ GET /dashboard 200 in 166ms (compile: 118ms, render: 48ms)
+ GET /lend 200 in 155ms (compile: 4ms, render: 150ms)
+ GET /borrow 200 in 136ms (compile: 98ms, render: 38ms)
+ GET /lend 200 in 56ms (compile: 8ms, render: 48ms)
+✓ Compiled in 635ms
+ GET /borrow 200 in 33ms (compile: 7ms, render: 26ms)
+ GET /lend 200 in 158ms (compile: 117ms, render: 41ms)
+ GET /dashboard 200 in 29ms (compile: 9ms, render: 21ms)
+ GET /borrow 200 in 26ms (compile: 7ms, render: 19ms)
+ GET /borrow 200 in 505ms (compile: 18ms, render: 487ms)
+ GET /lend 200 in 572ms (compile: 161ms, render: 411ms)
+ GET /dashboard 200 in 137ms (compile: 26ms, render: 111ms)
+✓ Compiled in 719ms
+ GET /lend 200 in 42ms (compile: 11ms, render: 31ms)
+ GET /borrow 200 in 85ms (compile: 16ms, render: 69ms)
+ GET /lend 200 in 50ms (compile: 13ms, render: 37ms)
+ GET /borrow 200 in 76ms (compile: 50ms, render: 26ms)
+✓ Compiled in 883ms
+⨯ ./src/app/borrow/page.tsx:273:13
+Parsing ecmascript source code failed
+[0m [90m 271 |[39m               [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 272 |[39m             [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+[31m[1m>[22m[39m[90m 273 |[39m           [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m             [31m[1m^[22m[39m
+ [90m 274 |[39m         )}
+ [90m 275 |[39m       [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 276 |[39m     [33m<[39m[33m/[39m[33mmain[39m[33m>[39m[0m
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./src/app/borrow/page.tsx [Client Component Browser]
+    ./src/app/borrow/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/borrow/page.tsx [Client Component SSR]
+    ./src/app/borrow/page.tsx [Server Component]
+
+
+ GET /borrow 500 in 3.9s (compile: 3.5s, render: 394ms)
+⨯ ./src/app/borrow/page.tsx:273:13
+Parsing ecmascript source code failed
+[0m [90m 271 |[39m               [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 272 |[39m             [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+[31m[1m>[22m[39m[90m 273 |[39m           [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m             [31m[1m^[22m[39m
+ [90m 274 |[39m         )}
+ [90m 275 |[39m       [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 276 |[39m     [33m<[39m[33m/[39m[33mmain[39m[33m>[39m[0m
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./src/app/borrow/page.tsx [Client Component Browser]
+    ./src/app/borrow/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/borrow/page.tsx [Client Component SSR]
+    ./src/app/borrow/page.tsx [Server Component]
+
+
+ GET /borrow 500 in 131ms (compile: 114ms, render: 17ms)
+⨯ ./src/app/borrow/page.tsx:273:13
+Parsing ecmascript source code failed
+[0m [90m 271 |[39m               [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 272 |[39m             [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+[31m[1m>[22m[39m[90m 273 |[39m           [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m             [31m[1m^[22m[39m
+ [90m 274 |[39m         )}
+ [90m 275 |[39m       [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 276 |[39m     [33m<[39m[33m/[39m[33mmain[39m[33m>[39m[0m
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./src/app/borrow/page.tsx [Client Component Browser]
+    ./src/app/borrow/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/borrow/page.tsx [Client Component SSR]
+    ./src/app/borrow/page.tsx [Server Component]
+
+
+ GET /borrow 500 in 38ms (compile: 23ms, render: 15ms)
+⨯ ./src/app/borrow/page.tsx:273:13
+Parsing ecmascript source code failed
+[0m [90m 271 |[39m               [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 272 |[39m             [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+[31m[1m>[22m[39m[90m 273 |[39m           [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m             [31m[1m^[22m[39m
+ [90m 274 |[39m         )}
+ [90m 275 |[39m       [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 276 |[39m     [33m<[39m[33m/[39m[33mmain[39m[33m>[39m[0m
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./src/app/borrow/page.tsx [Client Component Browser]
+    ./src/app/borrow/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/borrow/page.tsx [Client Component SSR]
+    ./src/app/borrow/page.tsx [Server Component]
+
+
+ GET /borrow 500 in 83ms (compile: 72ms, render: 11ms)
+⨯ ./src/app/borrow/page.tsx:273:13
+Parsing ecmascript source code failed
+[0m [90m 271 |[39m               [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 272 |[39m             [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+[31m[1m>[22m[39m[90m 273 |[39m           [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m             [31m[1m^[22m[39m
+ [90m 274 |[39m         )}
+ [90m 275 |[39m       [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 276 |[39m     [33m<[39m[33m/[39m[33mmain[39m[33m>[39m[0m
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./src/app/borrow/page.tsx [Client Component Browser]
+    ./src/app/borrow/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/borrow/page.tsx [Client Component SSR]
+    ./src/app/borrow/page.tsx [Server Component]
+
+
+ GET /borrow 500 in 37ms (compile: 25ms, render: 12ms)
+⨯ ./src/app/borrow/page.tsx:273:13
+Parsing ecmascript source code failed
+[0m [90m 271 |[39m               [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 272 |[39m             [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+[31m[1m>[22m[39m[90m 273 |[39m           [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m             [31m[1m^[22m[39m
+ [90m 274 |[39m         )}
+ [90m 275 |[39m       [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 276 |[39m     [33m<[39m[33m/[39m[33mmain[39m[33m>[39m[0m
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./src/app/borrow/page.tsx [Client Component Browser]
+    ./src/app/borrow/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/borrow/page.tsx [Client Component SSR]
+    ./src/app/borrow/page.tsx [Server Component]
+
+
+ GET /borrow 500 in 175ms (compile: 129ms, render: 46ms)
+✓ Compiled in 950ms
+ GET /borrow 200 in 620ms (compile: 295ms, render: 325ms)
+ GET /lend 200 in 47ms (compile: 10ms, render: 37ms)
+ GET /dashboard 200 in 51ms (compile: 27ms, render: 24ms)
+ GET /lend 200 in 33ms (compile: 9ms, render: 25ms)
+ GET /borrow 200 in 27ms (compile: 6ms, render: 21ms)
+✓ Compiled in 117ms
+✓ Compiled in 269ms
+✓ Compiled in 95ms
+ GET /lend 200 in 359ms (compile: 120ms, render: 239ms)
+✓ Compiled in 133ms
+ GET /dashboard 200 in 60ms (compile: 15ms, render: 45ms)
+ GET /lend 200 in 84ms (compile: 15ms, render: 68ms)
+ GET /borrow 200 in 391ms (compile: 334ms, render: 57ms)
+ GET /lend 200 in 51ms (compile: 7ms, render: 44ms)
+ GET /borrow 200 in 58ms (compile: 14ms, render: 43ms)
+ GET /lend 200 in 40ms (compile: 7ms, render: 33ms)
+✓ Compiled in 859ms
+ GET /dashboard 200 in 110ms (compile: 19ms, render: 92ms)
+ GET /lend 200 in 359ms (compile: 299ms, render: 59ms)
+ GET /borrow 200 in 59ms (compile: 13ms, render: 47ms)
+ GET /dashboard 200 in 46ms (compile: 13ms, render: 33ms)
+ GET /lend 200 in 47ms (compile: 9ms, render: 38ms)
+ GET /dashboard 200 in 73ms (compile: 21ms, render: 52ms)
+✓ Compiled in 819ms
+ GET /lend 200 in 70ms (compile: 13ms, render: 57ms)
+ GET /dashboard 200 in 751ms (compile: 258ms, render: 493ms)
+ GET /loan/1 200 in 346ms (compile: 291ms, render: 54ms)
+ GET /lend 200 in 59ms (compile: 10ms, render: 49ms)
+ GET /dashboard 200 in 41ms (compile: 18ms, render: 23ms)
+✓ Compiled in 143ms
+ GET /loan/1 200 in 143ms (compile: 115ms, render: 28ms)
+ GET /lend 200 in 32ms (compile: 6ms, render: 26ms)
+ GET /dashboard 200 in 137ms (compile: 100ms, render: 37ms)
+✓ Compiled in 286ms
+ GET /lend 200 in 34ms (compile: 9ms, render: 25ms)
+ GET /borrow 200 in 61ms (compile: 27ms, render: 33ms)
+✓ Compiled in 234ms
+ GET /dashboard 200 in 208ms (compile: 146ms, render: 62ms)
+ GET /lend 200 in 252ms (compile: 187ms, render: 65ms)
+ GET /dashboard 200 in 48ms (compile: 11ms, render: 37ms)
+⚠ Fast Refresh had to perform a full reload when ./src/providers/StarkzapProvider.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+✓ Compiled in 982ms
+ GET /dashboard 200 in 709ms (compile: 240ms, render: 469ms)
+ GET /dashboard 200 in 90ms (compile: 4ms, render: 86ms)
+✓ Compiled in 178ms
+✓ Compiled in 335ms
+ GET /lend 200 in 572ms (compile: 390ms, render: 182ms)
+ GET /borrow 200 in 187ms (compile: 139ms, render: 48ms)
+✓ Compiled in 293ms
+ GET /dashboard 200 in 168ms (compile: 101ms, render: 67ms)
+ GET /lend 200 in 34ms (compile: 7ms, render: 26ms)
+ GET /dashboard 200 in 44ms (compile: 5ms, render: 39ms)
+ GET /borrow 200 in 41ms (compile: 6ms, render: 35ms)
+ GET /lend 200 in 32ms (compile: 7ms, render: 25ms)
+ GET /dashboard 200 in 50ms (compile: 10ms, render: 39ms)
+ GET /lend 200 in 59ms (compile: 31ms, render: 28ms)
+ GET /dashboard 200 in 30ms (compile: 7ms, render: 23ms)
+ GET /lend 200 in 188ms (compile: 163ms, render: 24ms)
+✓ Compiled in 477ms
+ GET /borrow 200 in 392ms (compile: 165ms, render: 227ms)
+ GET /lend 200 in 64ms (compile: 27ms, render: 37ms)
+ GET /dashboard 200 in 31ms (compile: 7ms, render: 23ms)
+ GET /lend 200 in 37ms (compile: 8ms, render: 29ms)
+ GET /dashboard 200 in 33ms (compile: 7ms, render: 26ms)
+✓ Compiled in 173ms
+✓ Compiled in 164ms
+ GET /dashboard 200 in 101ms (compile: 12ms, render: 89ms)
+ GET /lend 200 in 203ms (compile: 156ms, render: 46ms)
+ GET /borrow 200 in 44ms (compile: 12ms, render: 32ms)
+ GET /dashboard 200 in 56ms (compile: 8ms, render: 48ms)
+ GET /lend 200 in 51ms (compile: 9ms, render: 42ms)
+ GET /borrow 200 in 39ms (compile: 8ms, render: 31ms)
+ GET /dashboard 200 in 55ms (compile: 15ms, render: 40ms)
+ GET /loan/1 200 in 408ms (compile: 338ms, render: 69ms)
+ GET /loan/1 200 in 1328ms (compile: 116ms, render: 1212ms)
+ GET /lend 200 in 49ms (compile: 11ms, render: 38ms)
+ GET /dashboard 200 in 55ms (compile: 10ms, render: 45ms)
+ GET /borrow 200 in 50ms (compile: 7ms, render: 44ms)
+ GET /lend 200 in 63ms (compile: 19ms, render: 45ms)
+ GET /lend 200 in 33ms (compile: 8ms, render: 25ms)
+ GET /dashboard 200 in 56ms (compile: 8ms, render: 48ms)
+ GET /lend 200 in 52ms (compile: 7ms, render: 46ms)
+ GET /dashboard 200 in 42ms (compile: 12ms, render: 30ms)
+ GET /lend 200 in 40ms (compile: 7ms, render: 33ms)
+ GET /dashboard 200 in 313ms (compile: 110ms, render: 204ms)
+ GET /lend 200 in 88ms (compile: 24ms, render: 64ms)
+ GET /borrow 200 in 92ms (compile: 28ms, render: 63ms)
+ GET /dashboard 200 in 119ms (compile: 59ms, render: 60ms)
+✓ Compiled in 513ms
+ GET /lend 200 in 71ms (compile: 13ms, render: 58ms)
+ GET /borrow 200 in 255ms (compile: 81ms, render: 174ms)
+ GET /dashboard 200 in 396ms (compile: 341ms, render: 55ms)
+ GET /lend 200 in 59ms (compile: 8ms, render: 51ms)
+ GET /borrow 200 in 43ms (compile: 11ms, render: 32ms)
+ GET /lend 200 in 55ms (compile: 7ms, render: 48ms)
+ GET /dashboard 200 in 29ms (compile: 7ms, render: 22ms)
+ GET /lend 200 in 48ms (compile: 22ms, render: 26ms)
+ GET /borrow 200 in 52ms (compile: 6ms, render: 46ms)
+ GET /dashboard 200 in 68ms (compile: 18ms, render: 50ms)
+✓ Compiled in 385ms
+ GET /lend 200 in 44ms (compile: 15ms, render: 29ms)
+ GET /borrow 200 in 32ms (compile: 9ms, render: 24ms)
+ GET / 200 in 1791ms (compile: 144ms, render: 1647ms)
+ GET /borrow 200 in 101ms (compile: 13ms, render: 88ms)
+ GET /lend 200 in 338ms (compile: 283ms, render: 54ms)
+ GET /dashboard 200 in 64ms (compile: 16ms, render: 47ms)
+ GET /borrow 200 in 53ms (compile: 7ms, render: 45ms)
+ GET /dashboard 200 in 39ms (compile: 9ms, render: 30ms)
+ GET /lend 200 in 38ms (compile: 7ms, render: 31ms)
+ GET /lend 200 in 423ms (compile: 8ms, render: 415ms)
+ GET /dashboard 200 in 60ms (compile: 18ms, render: 42ms)
+ GET /lend 200 in 55ms (compile: 8ms, render: 47ms)
+ GET /borrow 200 in 102ms (compile: 9ms, render: 93ms)
+ GET /lend 200 in 45ms (compile: 7ms, render: 38ms)
+ GET /dashboard 200 in 55ms (compile: 22ms, render: 33ms)
+ GET /borrow 200 in 34ms (compile: 6ms, render: 28ms)
+ GET /lend 200 in 64ms (compile: 12ms, render: 52ms)
+ GET /dashboard 200 in 31ms (compile: 8ms, render: 23ms)
+ GET /lend 200 in 30ms (compile: 5ms, render: 25ms)
+ GET /borrow 200 in 57ms (compile: 6ms, render: 50ms)
+✓ Compiled in 562ms
+ GET /lend 200 in 34ms (compile: 11ms, render: 23ms)
+ GET / 200 in 120ms (compile: 11ms, render: 109ms)
+ GET / 200 in 38ms (compile: 6ms, render: 32ms)
+ GET / 200 in 30ms (compile: 4ms, render: 27ms)
+ GET / 200 in 41ms (compile: 5ms, render: 36ms)
+ GET / 200 in 53ms (compile: 7ms, render: 47ms)
+✓ Compiled in 301ms
+ GET /lend 200 in 50ms (compile: 6ms, render: 44ms)
+ GET /borrow 200 in 81ms (compile: 10ms, render: 71ms)
+ GET / 200 in 1496ms (compile: 251ms, render: 1245ms)
+✓ Compiled in 532ms
+ GET /lend 200 in 67ms (compile: 34ms, render: 33ms)
+ GET /dashboard 200 in 67ms (compile: 39ms, render: 28ms)
+ GET /borrow 200 in 45ms (compile: 24ms, render: 21ms)
+ GET /lend 200 in 32ms (compile: 7ms, render: 25ms)
+ GET /dashboard 200 in 23ms (compile: 4ms, render: 19ms)
+✓ Compiled in 209ms
+✓ Compiled in 185ms
+✓ Compiled in 490ms
+✓ Compiled in 78ms
+ GET /dashboard 200 in 127ms (compile: 52ms, render: 75ms)
+✓ Compiled in 58ms
+ GET /lend 200 in 57ms (compile: 11ms, render: 47ms)
+ GET /borrow 200 in 42ms (compile: 8ms, render: 34ms)
+ GET /lend 200 in 33ms (compile: 6ms, render: 28ms)
+ GET /dashboard 200 in 54ms (compile: 8ms, render: 46ms)
+✓ Compiled in 175ms
+✓ Compiled in 105ms
+✓ Compiled in 94ms
+✓ Compiled in 108ms
+✓ Compiled in 83ms
+ GET /lend 200 in 416ms (compile: 343ms, render: 73ms)
+ GET /borrow 200 in 174ms (compile: 121ms, render: 53ms)
+ GET / 200 in 1536ms (compile: 123ms, render: 1413ms)
+✓ Compiled in 621ms
+⚠ Fast Refresh had to perform a full reload when ./src/providers/StarkzapProvider.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET / 200 in 1872ms (compile: 944ms, render: 927ms)
+⚠ Fast Refresh had to perform a full reload when ./src/providers/StarkzapProvider.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+✓ Compiled in 82ms
+ GET / 200 in 701ms (compile: 583ms, render: 118ms)
+ GET /borrow 200 in 244ms (compile: 176ms, render: 68ms)
+ GET /dashboard 200 in 258ms (compile: 181ms, render: 77ms)
+ GET /dashboard 200 in 1020ms (compile: 5ms, render: 1015ms)
+ GET /dashboard 200 in 154ms (compile: 37ms, render: 117ms)
+⚠ Fast Refresh had to perform a full reload when ./src/providers/StarkzapProvider.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+✓ Compiled in 278ms
+ GET /dashboard 200 in 445ms (compile: 115ms, render: 330ms)
+ GET /dashboard 200 in 55ms (compile: 3ms, render: 52ms)
+ GET /dashboard 200 in 86ms (compile: 9ms, render: 77ms)
+⚠ Fast Refresh had to perform a full reload when ./src/providers/StarkzapProvider.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+✓ Compiled in 69ms
+ GET /dashboard 200 in 574ms (compile: 178ms, render: 396ms)
+ GET /dashboard 200 in 95ms (compile: 6ms, render: 90ms)
+✓ Compiled in 886ms
+ GET /stake 404 in 2.0s (compile: 1991ms, render: 55ms)
+ GET /stake 404 in 24ms (compile: 6ms, render: 18ms)
+ GET /stake 404 in 84ms (compile: 4ms, render: 80ms)
+ GET /stake 404 in 101ms (compile: 12ms, render: 90ms)
+ GET /stake 200 in 1371ms (compile: 1222ms, render: 149ms)
+ GET /stake 200 in 100ms (compile: 4ms, render: 96ms)
+ GET /stake 200 in 491ms (compile: 3ms, render: 488ms)
+ GET /stake 200 in 420ms (compile: 43ms, render: 377ms)
+ GET /stake 200 in 422ms (compile: 17ms, render: 405ms)
+ GET /stake 200 in 467ms (compile: 9ms, render: 458ms)
+ GET /stake 200 in 48ms (compile: 9ms, render: 39ms)
+ GET /stake 200 in 417ms (compile: 56ms, render: 361ms)
+✓ Compiled in 410ms
+ GET /dashboard 200 in 477ms (compile: 301ms, render: 175ms)
+ GET /lend 200 in 319ms (compile: 270ms, render: 49ms)
+ GET /borrow 200 in 613ms (compile: 164ms, render: 449ms)
+ GET /dashboard 200 in 63ms (compile: 11ms, render: 52ms)
+ GET /stake 200 in 53ms (compile: 11ms, render: 42ms)
+ GET /dashboard 200 in 52ms (compile: 14ms, render: 38ms)
+ GET /dashboard 200 in 844ms (compile: 47ms, render: 798ms)
+ GET /dashboard 200 in 88ms (compile: 24ms, render: 65ms)
+ GET /dashboard 200 in 64ms (compile: 9ms, render: 56ms)
+ GET / 200 in 1546ms (compile: 193ms, render: 1353ms)
+ GET /dashboard 200 in 39ms (compile: 12ms, render: 27ms)
+ GET /stake 200 in 36ms (compile: 9ms, render: 27ms)
+ GET /dashboard 200 in 33ms (compile: 8ms, render: 25ms)
+ GET /stake 200 in 26ms (compile: 5ms, render: 21ms)
+ GET /lend 200 in 62ms (compile: 25ms, render: 37ms)
+ GET /borrow 200 in 56ms (compile: 29ms, render: 27ms)
+ GET /stake 200 in 48ms (compile: 4ms, render: 44ms)
+ GET / 200 in 179ms (compile: 23ms, render: 155ms)
+ GET /stake 200 in 196ms (compile: 15ms, render: 182ms)
+ GET /lend 200 in 278ms (compile: 37ms, render: 241ms)
+ GET /stake 200 in 126ms (compile: 25ms, render: 101ms)
+ GET /borrow 200 in 378ms (compile: 13ms, render: 365ms)
+✓ Compiled in 774ms
+ GET /lend 200 in 68ms (compile: 12ms, render: 55ms)
+ GET /stake 200 in 48ms (compile: 14ms, render: 34ms)
+ GET /dashboard 200 in 68ms (compile: 15ms, render: 53ms)
+ GET /borrow 200 in 50ms (compile: 11ms, render: 39ms)
+✓ Compiled in 502ms
+ GET /stake 200 in 689ms (compile: 259ms, render: 429ms)
+ GET /borrow 200 in 32ms (compile: 10ms, render: 22ms)
+ GET /lend 200 in 37ms (compile: 7ms, render: 30ms)
+✓ Compiled in 650ms
+ GET /stake 200 in 162ms (compile: 117ms, render: 45ms)
+ GET /dashboard 200 in 42ms (compile: 8ms, render: 34ms)
+ GET / 200 in 115ms (compile: 13ms, render: 102ms)
+ GET /loan/1 200 in 525ms (compile: 458ms, render: 68ms)
+ GET /lend 200 in 26ms (compile: 5ms, render: 21ms)
+ GET /stake 200 in 435ms (compile: 5ms, render: 430ms)
+ GET /stake 200 in 90ms (compile: 34ms, render: 57ms)
+✓ Compiled in 647ms
+ GET /dashboard 200 in 72ms (compile: 16ms, render: 56ms)
+ GET /stake 200 in 96ms (compile: 16ms, render: 80ms)
+ GET /lend 200 in 68ms (compile: 17ms, render: 51ms)
+ GET /borrow 200 in 106ms (compile: 18ms, render: 87ms)
+✓ Compiled in 238ms
+ GET / 200 in 272ms (compile: 15ms, render: 257ms)
+ GET /lend 200 in 153ms (compile: 8ms, render: 144ms)
+ GET /borrow 200 in 1114ms (compile: 298ms, render: 816ms)
+✓ Compiled in 676ms
+ GET /lend 200 in 100ms (compile: 19ms, render: 81ms)
+ GET /stake 200 in 127ms (compile: 42ms, render: 86ms)
+✓ Compiled in 874ms
+ GET /dashboard 200 in 669ms (compile: 520ms, render: 148ms)
+ GET /dashboard 200 in 32ms (compile: 6ms, render: 26ms)
+ GET /borrow 200 in 632ms (compile: 180ms, render: 452ms)
+ GET /borrow 200 in 374ms (compile: 13ms, render: 361ms)
+ GET / 200 in 488ms (compile: 132ms, render: 355ms)
+ GET /borrow 200 in 46ms (compile: 15ms, render: 31ms)
+✓ Compiled in 1954ms
+ GET /lend 200 in 193ms (compile: 136ms, render: 57ms)
+ GET /loan/1 200 in 381ms (compile: 332ms, render: 49ms)
+ GET /loan/1 200 in 3.4s (compile: 306ms, render: 3.1s)
+ GET /lend 200 in 89ms (compile: 26ms, render: 63ms)
+ GET /stake 200 in 296ms (compile: 231ms, render: 65ms)
+ GET /lend 200 in 28ms (compile: 4ms, render: 24ms)
+ GET /borrow 200 in 123ms (compile: 43ms, render: 80ms)
+ GET /lend 200 in 52ms (compile: 14ms, render: 38ms)
+ GET /stake 200 in 57ms (compile: 27ms, render: 30ms)
+ GET /dashboard 200 in 121ms (compile: 74ms, render: 48ms)
+ GET /loan/1 200 in 198ms (compile: 141ms, render: 56ms)
+ GET /lend 200 in 72ms (compile: 12ms, render: 60ms)
+ GET /borrow 200 in 49ms (compile: 21ms, render: 29ms)
+ GET /lend 200 in 87ms (compile: 36ms, render: 51ms)
+ GET /stake 200 in 64ms (compile: 9ms, render: 55ms)
+ GET /dashboard 200 in 60ms (compile: 23ms, render: 37ms)
+ GET /loan/1 200 in 204ms (compile: 163ms, render: 41ms)
+✓ Compiled in 1211ms
+ GET /lend 200 in 141ms (compile: 45ms, render: 95ms)
+ GET /loan/1 200 in 1693ms (compile: 886ms, render: 807ms)
+ GET /borrow 200 in 294ms (compile: 153ms, render: 140ms)
+ GET /lend 200 in 141ms (compile: 18ms, render: 123ms)
+ GET /stake 200 in 139ms (compile: 74ms, render: 64ms)
+ GET /lend 200 in 78ms (compile: 11ms, render: 67ms)
+ GET /borrow 200 in 120ms (compile: 27ms, render: 93ms)
+ GET /stake 200 in 237ms (compile: 97ms, render: 140ms)
+ GET /lend 200 in 125ms (compile: 44ms, render: 82ms)
+ GET /dashboard 200 in 268ms (compile: 146ms, render: 122ms)
+ GET /loan/1 200 in 264ms (compile: 191ms, render: 73ms)
+✓ Compiled in 1091ms
+ GET /lend 200 in 1437ms (compile: 502ms, render: 935ms)
+ GET /stake 200 in 62ms (compile: 32ms, render: 30ms)
+ GET /lend 200 in 49ms (compile: 17ms, render: 32ms)
+ GET /loan/2 200 in 526ms (compile: 397ms, render: 129ms)
+ GET /lend 200 in 94ms (compile: 24ms, render: 70ms)
+ GET /loan/1 200 in 216ms (compile: 164ms, render: 52ms)
+ GET /lend 200 in 704ms (compile: 19ms, render: 685ms)
+✓ Compiled in 3ms
+ GET /lend 200 in 1443ms (compile: 512ms, render: 930ms)
+ GET /lend 200 in 246ms (compile: 62ms, render: 184ms)
+ GET /loan/1 200 in 728ms (compile: 356ms, render: 372ms)
+✓ Compiled in 626ms
+ GET /stake 200 in 210ms (compile: 82ms, render: 128ms)
+ GET /dashboard 200 in 93ms (compile: 18ms, render: 75ms)
+ GET /lend 200 in 62ms (compile: 15ms, render: 47ms)
+ GET /loan/1 200 in 385ms (compile: 159ms, render: 226ms)
+ GET /lend 200 in 176ms (compile: 14ms, render: 162ms)
+ GET /borrow 200 in 482ms (compile: 152ms, render: 329ms)
+ GET /borrow 200 in 319ms (compile: 12ms, render: 307ms)
+ GET / 200 in 278ms (compile: 78ms, render: 200ms)
+✓ Compiled in 379ms
+✓ Compiled in 269ms
+✓ Compiled in 487ms
+ GET /lend 200 in 177ms (compile: 38ms, render: 139ms)
+ GET /stake 200 in 107ms (compile: 17ms, render: 90ms)
+ GET /lend 200 in 64ms (compile: 11ms, render: 53ms)
+ GET /loan/1 200 in 318ms (compile: 226ms, render: 92ms)
+ GET /stake 200 in 40ms (compile: 7ms, render: 32ms)
+ GET /dashboard 200 in 799ms (compile: 460ms, render: 339ms)
+✓ Compiled in 399ms
+ GET /stake 200 in 286ms (compile: 210ms, render: 76ms)
+ GET /lend 200 in 42ms (compile: 9ms, render: 33ms)
+ GET /loan/1 200 in 208ms (compile: 145ms, render: 62ms)
+ GET /lend 200 in 69ms (compile: 15ms, render: 54ms)
+ GET /borrow 200 in 194ms (compile: 140ms, render: 54ms)
+ GET / 200 in 730ms (compile: 157ms, render: 572ms)
+ GET /lend 200 in 516ms (compile: 102ms, render: 414ms)
+ GET /loan/2 200 in 240ms (compile: 160ms, render: 80ms)
+ GET /lend 200 in 772ms (compile: 196ms, render: 576ms)
+✓ Compiled in 1383ms
+ GET /loan/1 200 in 1132ms (compile: 884ms, render: 248ms)
+ GET /borrow 200 in 849ms (compile: 236ms, render: 613ms)
+ GET /lend 200 in 151ms (compile: 41ms, render: 110ms)
+✓ Compiled in 783ms
+ GET /stake 200 in 229ms (compile: 75ms, render: 154ms)
+ GET /dashboard 200 in 129ms (compile: 21ms, render: 108ms)
+ GET /stake 200 in 88ms (compile: 10ms, render: 78ms)
+ GET /lend 200 in 93ms (compile: 21ms, render: 72ms)
+ GET /loan/1 200 in 353ms (compile: 217ms, render: 137ms)
+ GET /lend 200 in 116ms (compile: 10ms, render: 105ms)
+ GET /borrow 200 in 138ms (compile: 34ms, render: 105ms)
+ GET / 200 in 481ms (compile: 45ms, render: 437ms)
+ GET /lend 200 in 56ms (compile: 9ms, render: 48ms)
+✓ Compiled in 577ms
+✓ Compiled in 224ms
+✓ Compiled in 113ms
+✓ Compiled in 299ms
+✓ Compiled in 83ms
+ GET /loan/1 200 in 652ms (compile: 555ms, render: 97ms)
+ GET /borrow 200 in 261ms (compile: 187ms, render: 74ms)
+ GET /stake 200 in 223ms (compile: 154ms, render: 69ms)
+ GET /dashboard 200 in 211ms (compile: 146ms, render: 65ms)
+ GET /lend 200 in 237ms (compile: 164ms, render: 74ms)
+ GET /stake 200 in 55ms (compile: 10ms, render: 45ms)
+ GET /dashboard 200 in 61ms (compile: 8ms, render: 53ms)
+ GET /stake 200 in 119ms (compile: 18ms, render: 101ms)
+ GET /lend 200 in 69ms (compile: 10ms, render: 59ms)
+ GET /borrow 200 in 85ms (compile: 10ms, render: 76ms)
+ GET /lend 200 in 63ms (compile: 8ms, render: 55ms)
+ GET /stake 200 in 56ms (compile: 9ms, render: 47ms)
+ GET /dashboard 200 in 65ms (compile: 10ms, render: 56ms)
+ GET /borrow 200 in 2.1s (compile: 517ms, render: 1604ms)
+ GET /borrow 200 in 955ms (compile: 158ms, render: 797ms)
+ GET /dashboard 200 in 1992ms (compile: 113ms, render: 1879ms)
+ GET /stake 200 in 154ms (compile: 31ms, render: 124ms)
+ GET /lend 200 in 72ms (compile: 16ms, render: 56ms)
+ GET /borrow 200 in 209ms (compile: 14ms, render: 195ms)
+ GET /lend 200 in 44ms (compile: 13ms, render: 31ms)
+✓ Compiled in 1775ms
+ GET /lend 200 in 348ms (compile: 90ms, render: 258ms)
+ GET /borrow 200 in 138ms (compile: 26ms, render: 112ms)
+ GET /lend 200 in 122ms (compile: 28ms, render: 95ms)
+ GET /stake 200 in 674ms (compile: 56ms, render: 618ms)
+ GET /dashboard 200 in 193ms (compile: 68ms, render: 125ms)
+ GET /lend 200 in 74ms (compile: 17ms, render: 58ms)
+ GET /borrow 200 in 93ms (compile: 18ms, render: 76ms)
+ GET /lend 200 in 106ms (compile: 16ms, render: 89ms)
+ GET /stake 200 in 100ms (compile: 17ms, render: 83ms)
+ GET / 200 in 1440ms (compile: 521ms, render: 919ms)
+ GET /dashboard 200 in 63ms (compile: 16ms, render: 47ms)
+ GET /stake 200 in 52ms (compile: 21ms, render: 31ms)
+ GET /lend 200 in 47ms (compile: 10ms, render: 36ms)
+ GET /stake 200 in 67ms (compile: 14ms, render: 53ms)
+✓ Compiled in 606ms
+ GET /lend 200 in 76ms (compile: 12ms, render: 64ms)
+✓ Compiled in 249ms
+ GET /loan/2 200 in 908ms (compile: 737ms, render: 171ms)
+ GET /stake 200 in 1885ms (compile: 199ms, render: 1687ms)
+ GET /borrow 200 in 736ms (compile: 514ms, render: 222ms)
+ GET /dashboard 200 in 206ms (compile: 43ms, render: 162ms)
+ GET /borrow 200 in 138ms (compile: 35ms, render: 103ms)
+ GET /lend 200 in 946ms (compile: 819ms, render: 127ms)
+ GET /loan/1 200 in 397ms (compile: 276ms, render: 121ms)
+ GET /lend 200 in 97ms (compile: 21ms, render: 76ms)
+ GET /loan/2 200 in 334ms (compile: 238ms, render: 96ms)
+✓ Compiled in 1203ms
+✓ Compiled in 275ms
+✓ Compiled in 94ms
+✓ Compiled in 392ms
+✓ Compiled in 504ms
+ GET /loan/2 200 in 2.2s (compile: 894ms, render: 1261ms)
+ GET /borrow 200 in 269ms (compile: 178ms, render: 91ms)
+✓ Compiled in 108ms
+✓ Compiled in 110ms
+ GET / 200 in 2.6s (compile: 267ms, render: 2.4s)
+✓ Compiled in 98ms
+ GET /borrow 200 in 338ms (compile: 249ms, render: 88ms)
+ GET /lend 200 in 279ms (compile: 194ms, render: 86ms)
+ GET /loan/2 200 in 330ms (compile: 254ms, render: 75ms)
+ GET /stake 200 in 306ms (compile: 219ms, render: 87ms)
+ GET /dashboard 200 in 272ms (compile: 209ms, render: 63ms)
+✓ Compiled in 407ms
+✓ Compiled in 363ms
+✓ Compiled in 112ms
+ GET /lend 200 in 48ms (compile: 11ms, render: 37ms)
+ GET /loan/1 200 in 899ms (compile: 829ms, render: 71ms)
+ GET /lend 200 in 134ms (compile: 28ms, render: 106ms)
+ GET /stake 200 in 562ms (compile: 372ms, render: 190ms)
+✓ Compiled in 597ms
+ GET /dashboard 200 in 2.8s (compile: 1780ms, render: 981ms)
+ GET /dashboard 200 in 130ms (compile: 21ms, render: 109ms)
+ GET /stake 200 in 59ms (compile: 10ms, render: 49ms)
+ GET /dashboard 200 in 49ms (compile: 6ms, render: 43ms)
+ GET /loan/2 200 in 906ms (compile: 534ms, render: 372ms)
+ GET /lend 200 in 898ms (compile: 815ms, render: 84ms)
+ GET /dashboard 200 in 240ms (compile: 91ms, render: 149ms)
+ GET /lend 200 in 113ms (compile: 30ms, render: 83ms)
+ GET /borrow 200 in 1301ms (compile: 1179ms, render: 122ms)
+ GET /lend 200 in 366ms (compile: 129ms, render: 237ms)
+✓ Compiled in 883ms
+✓ Compiled in 344ms
+✓ Compiled in 36ms
+ GET /stake 200 in 930ms (compile: 692ms, render: 238ms)
+ GET /dashboard 200 in 336ms (compile: 249ms, render: 87ms)
+ GET /borrow 200 in 286ms (compile: 194ms, render: 92ms)
+ GET /lend 200 in 395ms (compile: 266ms, render: 128ms)
+ GET /dashboard 200 in 148ms (compile: 23ms, render: 125ms)
+ GET /loan/1 200 in 831ms (compile: 711ms, render: 120ms)
+✓ Compiled in 993ms
+✓ Compiled in 2ms
+ GET /loan/1 200 in 1859ms (compile: 620ms, render: 1239ms)
+✓ Compiled in 1056ms
+ GET /stake 200 in 862ms (compile: 455ms, render: 407ms)
+ GET /lend 200 in 327ms (compile: 248ms, render: 79ms)
+ GET /lend 200 in 337ms (compile: 21ms, render: 316ms)
+ GET /borrow 200 in 258ms (compile: 182ms, render: 76ms)
+ GET /stake 200 in 39ms (compile: 7ms, render: 32ms)
+ GET /dashboard 200 in 251ms (compile: 201ms, render: 50ms)
+ GET /dashboard 200 in 2.4s (compile: 284ms, render: 2.1s)
+ GET /borrow 200 in 137ms (compile: 49ms, render: 88ms)
+ GET /borrow 200 in 67ms (compile: 13ms, render: 54ms)
+ GET / 200 in 218ms (compile: 36ms, render: 182ms)
+ GET /borrow 200 in 523ms (compile: 111ms, render: 412ms)
+ GET /lend 200 in 426ms (compile: 72ms, render: 354ms)
+ GET /stake 200 in 136ms (compile: 29ms, render: 107ms)
+ GET /dashboard 200 in 1092ms (compile: 268ms, render: 824ms)
+✓ Compiled in 1275ms
+ GET /dashboard 200 in 589ms (compile: 42ms, render: 547ms)
+ GET /borrow 200 in 98ms (compile: 24ms, render: 74ms)
+ GET / 200 in 202ms (compile: 16ms, render: 186ms)
+ GET / 200 in 115ms (compile: 23ms, render: 92ms)
+ GET /borrow 200 in 78ms (compile: 20ms, render: 58ms)
+ GET /lend 200 in 91ms (compile: 16ms, render: 75ms)
+✓ Compiled in 1742ms
+ GET /borrow 200 in 70ms (compile: 27ms, render: 43ms)
+ GET /dashboard 200 in 255ms (compile: 101ms, render: 154ms)
