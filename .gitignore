@@ -4,3 +4,4 @@ contracts/CREDENTIALS.env
 contracts/deployer/
 .env.local
 contracts/target/
+contracts/
