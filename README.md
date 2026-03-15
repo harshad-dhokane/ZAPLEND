@@ -4,7 +4,7 @@
 
 ZapLend re-imagines DeFi peer-to-peer lending by introducing "Social Collateral." Borrowers can reduce their required capital by inviting friends to essentially co-sign their loan natively on-chain.
 
-![ZapLend Home](frontend/public/screenshots/home.png)
+![ZapLend Home](frontend/public/screenshots/home_new.png)
 
 ## 🏆 Starkzap Developer Challenge Submission
 
@@ -17,6 +17,7 @@ ZapLend is proudly submitted to the **Starkzap Developer Challenge**. It answers
 
 ### Links
 - **GitHub Repository**: [harshad-dhokane/ZAPLEND](https://github.com/harshad-dhokane/ZAPLEND)
+- **Technical Guide & Architecture Blueprint**: [Read GUIDE.md](./GUIDE.md)
 - **Live Demo App**: [Add Vercel URL Here]
 
 ## 🌟 Features & The Flow
@@ -27,6 +28,8 @@ ZapLend features a vibrant, Neo-Brutalism UI that makes complex DeFi interaction
 A user connects their wallet (via Cartridge) and submits a loan request for X amount of STRK. Normally, they would need 120% collateral. In ZapLend, they can set a **Social Collateral Target**. 
 - They put down a baseline deposit.
 - The rest of the required collateral is delegated.
+
+![ZapLend Borrow Request](frontend/public/screenshots/borrow_new.png)
 
 ### 2. Shareable Vouching
 The borrower receives a custom link (e.g. `/loan/8`) to send to friends. 
@@ -42,10 +45,12 @@ The **Dashboard Activity Feed** acts as a global timeline, tracking:
 - Loans being fully funded
 - Repayments and Defaults
 
-### 5. Repayments & Analytics
-Borrowers repay their loan + interest on the Dashboard. Analytics track global platform metrics (Total Value Locked, Active Loans, etc.)
+![ZapLend Dashboard](frontend/public/screenshots/dashboard_new.png)
 
-![ZapLend Dashboard](frontend/public/screenshots/dashboard.png)
+### 5. Analytics & Credit Profile
+Borrowers repay their loan + interest on the Dashboard. A robust Analytics dashboard tracks aggregate platform metrics, breaking down top loans by added collateral vs repaid value.
+
+![ZapLend Analytics](frontend/public/screenshots/analytics_new.png)
 
 ## 🏗️ Architecture
 
@@ -64,8 +69,6 @@ Written entirely in modern Cairo 2.x.
 | Styling | Tailwind CSS v4 |
 | State | React Query |
 | Wallet | Starkzap SDK (`starkzap`) |
-
-![ZapLend Lend Page](frontend/public/screenshots/lend.png)
 
 ## 🚀 Quick Start (Local Development)
 
