@@ -4,7 +4,7 @@
 
 ZapLend re-imagines DeFi peer-to-peer lending by introducing **"Social Collateral."** Borrowers can reduce their required capital by inviting friends to essentially co-sign their loan natively on-chain.
 
-![ZapLend Home](./frontend/public/screenshots/loan_marketplace.png)
+![ZapLend Home](./frontend/public/screenshots/landing.png)
 
 ---
 
@@ -37,43 +37,42 @@ ZapLend features a vibrant, Neo-Brutalism UI that makes complex DeFi interaction
 ### 1. Landing Page
 A bold, eye-catching hero section introducing the concept of Social Collateral lending.
 
-![Landing Page](./frontend/public/screenshots/loan_marketplace.png)
+![Landing Page](./frontend/public/screenshots/landing.png)
 
 ### 2. The Borrow Request
 A user connects their wallet (via Cartridge) and submits a loan request. Normally, they would need 120% collateral. In ZapLend, they can set a **Social Collateral Target**.
 - They put down a baseline deposit.
 - The rest of the required collateral is delegated to their social circle.
 
-![Borrow Page](./frontend/public/screenshots/dashboard-active_loans.png)
+![Borrow Page](./frontend/public/screenshots/borrow.png)
 
 ### 3. Loan Marketplace
-Explore active and pending loans in the marketplace. Filter by status (Active, Pending, Repaid) and search for specific borrowers.
+Explore active and pending loans in the marketplace. Filter by status (Active, Pending, Repaid) and search for specific borrowers. Each listing links to a shareable loan detail page, making it easy to get friends to vouch.
+
+- Shareable link per loan
+- QR code for fast sharing
+- Gasless vouching for friends via Starkzap Paymaster
 
 ![Marketplace](./frontend/public/screenshots/loan_marketplace.png)
 
-### 4. Shareable Vouching
-Each loan has a unique shareable link at `/loan/[id]`. Friends can vouch via:
-- Direct link sharing
-- QR code generation
-- Social media (Twitter, Telegram, WhatsApp)
+### 4. Dashboard: Active & Pending Loans
+Track your active loans, pending social collateral, and repayments in one place. Make payments, monitor progress, and see due amounts at a glance.
 
-![Loan Detail with Sharing](./frontend/public/screenshots/contract_logs.png)
+![Active Loans](./frontend/public/screenshots/dashboard-active_loans.png)
 
-### 5. Friends Vouch (Gasless!)
-Friends click **Vouch** and stake their own STRK towards the borrower's goal. Thanks to Starkzap's Paymaster integration, this transaction is completely gasless for the voucher.
+### 5. Help Center & FAQs
+Clear guidance on vouching, repayments, credit scores, and safety. The help center keeps new users oriented and confident.
 
-✨ **Interest Distribution:** The interest generated from the loan is proportionally distributed among the vouchers who helped fund the social collateral, rewarding them for their trust.
+![Help Center](./frontend/public/screenshots/help_center.png)
 
-![Vouching Interface](./frontend/public/screenshots/help_center.png)
+### 6. Dashboard Overview
+High-level stats and credit insights:
+- Total borrowed
+- Active loans
+- Actionable vouches
+- Credit score snapshot
 
-### 6. Dashboard & Activity Feed
-Your personal hub for tracking everything:
-- Overview of total borrowed and active vouches
-- Make payments on active loans
-- View repayment history
-- Live activity feed showing global protocol events
-
-![Dashboard](./frontend/public/screenshots/dashboard-overview.png)
+![Dashboard Overview](./frontend/public/screenshots/dashboard-overview.png)
 
 ### 7. Analytics & Credit Profile
 A robust Analytics dashboard tracks aggregate platform metrics:

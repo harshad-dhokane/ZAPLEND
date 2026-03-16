@@ -30,7 +30,7 @@ ZapLend is built on the **Starkzap SDK**, which means you don't need to worry ab
 4. Login using your passkey (Face ID/Fingerprint) or email
 5. Your wallet is now connected!
 
-![Wallet Connection](./frontend/public/screenshots/help_center.png)
+![Landing & Connect Wallet](./frontend/public/screenshots/landing.png)
 
 ### 1.2 Getting Testnet STRK
 
@@ -75,7 +75,7 @@ Traditional DeFi loans require 120% collateral. With Social Collateral:
    - Your STRK will be deposited as initial collateral
    - Loan enters the marketplace with `Pending` status
 
-![Borrow Page](./frontend/public/screenshots/dashboard-active_loans.png)
+![Borrow Page](./frontend/public/screenshots/borrow.png)
 
 ### 2.3 Sharing Your Loan Request
 
@@ -122,8 +122,6 @@ When you find a loan you want to support:
    - Transaction processes via Cartridge Controller
    - Your vouch is recorded on-chain
 
-![Vouching](./frontend/public/screenshots/help_center.png)
-
 ### 3.3 Loan Activation
 
 A loan activates when:
@@ -159,6 +157,8 @@ Your [Dashboard](https://zaplend.vercel.app/dashboard) is your personal command 
 - Loans you've supported
 - Monitor borrower's repayment progress
 - Withdraw vouches (only before activation)
+
+![Active & Pending Loans](./frontend/public/screenshots/dashboard-active_loans.png)
 
 ### 4.3 Repayment Process
 
@@ -307,6 +307,8 @@ Each log entry shows:
 ---
 
 ## 8. FAQs & Troubleshooting
+
+![Help Center](./frontend/public/screenshots/help_center.png)
 
 ### Frequently Asked Questions
 
