@@ -10,6 +10,8 @@ const EVENT_KEYS = {
   LoanActivated: hash.starknetKeccak('LoanActivated').toString(16),
   LoanRepaid: hash.starknetKeccak('LoanRepaid').toString(16),
   LoanDefaulted: hash.starknetKeccak('LoanDefaulted').toString(16),
+  Staked: hash.starknetKeccak('Staked').toString(16),
+  Unstaked: hash.starknetKeccak('Unstaked').toString(16),
 };
 
 export type ContractLog = {
@@ -97,8 +99,20 @@ async function fetchContractLogs(): Promise<ContractLog[]> {
       } else if (isMatch(EVENT_KEYS.LoanDefaulted)) {
         type = 'LoanDefaulted';
         data = { loanId };
+      } else if (isMatch(EVENT_KEYS.Staked)) {
+        type = 'Staked';
+        const staker = event.data[0];
+        const validator = event.data[1];
+        const amount = formatStrk(u256ToBigInt(event.data[2], event.data[3]));
+        data = { staker, validator, amount };
+      } else if (isMatch(EVENT_KEYS.Unstaked)) {
+        type = 'Unstaked';
+        const staker = event.data[0];
+        const validator = event.data[1];
+        const amount = formatStrk(u256ToBigInt(event.data[2], event.data[3]));
+        data = { staker, validator, amount };
       } else {
-        return; // Skip non-loan events
+        return; // Skip non-loan/stake events
       }
 
       const blockNumber = event.block_number || 0;

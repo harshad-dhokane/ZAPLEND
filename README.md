@@ -159,6 +159,8 @@ cp .env.example .env.local
 # Edit .env.local with your contract addresses
 
 # Run development server
+#./node_modules/.bin/next dev
+
 npm run dev
 ```
 

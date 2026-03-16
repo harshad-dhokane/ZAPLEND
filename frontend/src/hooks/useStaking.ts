@@ -14,6 +14,36 @@ interface StakingPosition {
   unpoolTime: number | null;
 }
 
+export interface SavedPoolInfo {
+  pool: string;
+  decimals: number;
+  validatorName?: string;
+}
+
+// SessionStorage helpers for multi-pool tracking
+const POOLS_KEY = 'zaplend_staked_pools';
+
+export function getSavedPools(): SavedPoolInfo[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = sessionStorage.getItem(POOLS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+export function addSavedPool(pool: string, decimals: number, validatorName?: string) {
+  const pools = getSavedPools();
+  if (!pools.find(p => p.pool === pool)) {
+    pools.push({ pool, decimals, validatorName });
+    try { sessionStorage.setItem(POOLS_KEY, JSON.stringify(pools)); } catch {}
+  }
+  // Also keep legacy single-pool key for backward compat
+  try {
+    sessionStorage.setItem('zaplend_active_pool', pool);
+    sessionStorage.setItem('zaplend_active_pool_decimals', String(decimals));
+  } catch {}
+}
+
 export function useStakingPosition(poolAddress: string | null) {
   const { wallet, isConnected } = useStarkzap();
 
@@ -42,6 +72,118 @@ export function useStakingPosition(poolAddress: string | null) {
     enabled: isConnected && !!wallet && !!poolAddress,
     refetchInterval: 15_000,
     retry: 1,
+  });
+}
+
+export interface PoolPositionData extends StakingPosition {
+  poolAddress: string;
+  decimals: number;
+  validatorName?: string;
+}
+
+export function useAllStakingPositions() {
+  const { wallet, isConnected } = useStarkzap();
+
+  return useQuery<PoolPositionData[]>({
+    queryKey: ['all-staking-positions-discovery'],
+    queryFn: async () => {
+      if (!wallet) return [];
+
+      const results: PoolPositionData[] = [];
+      const checkedPools = new Set<string>();
+
+      try {
+        // 1. Load SDK and validator presets
+        const starkzapModule = await import('starkzap');
+        const { StarkZap } = starkzapModule;
+        const network = (process.env.NEXT_PUBLIC_STARKZAP_NETWORK as 'sepolia' | 'mainnet') || 'sepolia';
+        const sdk = new StarkZap({ network });
+
+        const presets = network === 'mainnet'
+          ? starkzapModule.mainnetValidators
+          : starkzapModule.sepoliaValidators;
+
+        if (!presets) return [];
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const validators: { name: string; stakerAddress: string }[] = Object.values(presets).map((v: any) => ({
+          name: v.name || 'Unknown',
+          stakerAddress: v.stakerAddress || v.address || '',
+        }));
+
+        // 2. For each validator, get their pools and check user's position
+        for (const validator of validators) {
+          try {
+            const stakerPools = await sdk.getStakerPools(validator.stakerAddress as any);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            for (const p of stakerPools as any[]) {
+              const poolAddr = p.poolContract || p.poolAddress || p.address || '';
+              if (!poolAddr || checkedPools.has(poolAddr)) continue;
+              checkedPools.add(poolAddr);
+
+              try {
+                const position = await (wallet as any).getPoolPosition(poolAddr);
+                if (!position) continue;
+
+                const staked = position.staked?.toFormatted?.() || '0';
+                // Skip pools with zero stake
+                if (staked === '0' || staked === '0 STRK') continue;
+
+                results.push({
+                  poolAddress: poolAddr,
+                  decimals: p.token?.decimals || 18,
+                  validatorName: validator.name,
+                  staked,
+                  rewards: position.rewards?.toFormatted?.() || '0',
+                  total: position.total?.toFormatted?.() || '0',
+                  commissionPercent: position.commissionPercent ?? 0,
+                  unpooling: position.unpooling?.toFormatted?.() || '0',
+                  unpoolTime: position.unpoolTime ?? null,
+                });
+              } catch {
+                // Position doesn't exist for this pool — skip
+              }
+            }
+          } catch {
+            // Validator has no pools or error — skip
+          }
+        }
+
+        // 3. Also check any previously saved pools from sessionStorage (fallback)
+        const savedPools = getSavedPools();
+        for (const { pool, decimals, validatorName } of savedPools) {
+          if (checkedPools.has(pool)) continue;
+          checkedPools.add(pool);
+          try {
+            const position = await (wallet as any).getPoolPosition(pool);
+            if (!position) continue;
+            const staked = position.staked?.toFormatted?.() || '0';
+            if (staked === '0' || staked === '0 STRK') continue;
+            results.push({
+              poolAddress: pool,
+              decimals,
+              validatorName,
+              staked,
+              rewards: position.rewards?.toFormatted?.() || '0',
+              total: position.total?.toFormatted?.() || '0',
+              commissionPercent: position.commissionPercent ?? 0,
+              unpooling: position.unpooling?.toFormatted?.() || '0',
+              unpoolTime: position.unpoolTime ?? null,
+            });
+          } catch {
+            // Skip
+          }
+        }
+      } catch (err) {
+        console.error('Failed to discover staking positions:', err);
+      }
+
+      return results;
+    },
+    enabled: isConnected && !!wallet,
+    refetchInterval: 30_000, // Slightly longer — full scan is heavier
+    retry: 1,
+    staleTime: 15_000,
   });
 }
 
@@ -86,6 +228,7 @@ export function useStakingActions() {
 
       // Invalidate position cache
       queryClient.invalidateQueries({ queryKey: ['staking-position', poolAddress] });
+      queryClient.invalidateQueries({ queryKey: ['all-staking-positions-discovery'] });
       queryClient.invalidateQueries({ queryKey: ['balance'] });
 
       return { transaction_hash: tx.hash };

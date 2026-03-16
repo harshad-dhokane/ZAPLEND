@@ -195,6 +195,17 @@ body {
   transition: all 0.05s ease;
 }
 
+/* Consistent yellow-border hover for non-neo-card interactive rows */
+.hover-yellow-border {
+  transition: border-color 0.1s cubic-bezier(0, 0, 0.2, 1);
+}
+.hover-yellow-border:hover {
+  border-color: var(--accent-primary) !important;
+}
+.hover-yellow-border:active {
+  border-color: var(--accent-primary) !important;
+}
+
 /* ═══════════════════════════════════════════════
    TEXT STYLING
    ═══════════════════════════════════════════════ */

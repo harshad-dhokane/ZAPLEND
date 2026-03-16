@@ -33,6 +33,10 @@ const faqs: FAQItem[] = [
     answer: 'Yes! Thanks to the Starkzap SDK integration, vouching transactions are sponsored — meaning your friends can vouch for you without paying any gas fees. This makes it frictionless for friends to support your loan.',
   },
   {
+    question: 'Do vouchers earn anything?',
+    answer: 'Yes! When a loan is repaid, the 5% interest is distributed proportionally among all vouchers. For example, if you vouched 400 STRK out of 800 STRK total social collateral on a 1,000 STRK loan, you would earn 25 STRK (50% of the 50 STRK interest). Your original vouch is also returned in full.',
+  },
+  {
     question: 'What is the Credit Score?',
     answer: 'Your on-chain Credit Score (ranging from 300 to 1000) is calculated based on your borrowing history: loans created, repaid on time, and defaults. A higher score builds trust and helps you get more vouches from the community.',
   },
@@ -81,10 +85,10 @@ export default function HelpPage() {
     <main className="min-h-screen">
       <Navbar />
 
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 pt-12 pb-24">
+      <div className="max-w-7xl mx-auto px-3 md:px-8 pt-6 pb-12">
 
         {/* ═══ HERO ═══ */}
-        <div className="mb-16 animate-fade-in-up">
+        <div className="mb-8 animate-fade-in-up">
           <div className="neo-card p-8 md:p-12" style={{ background: 'var(--accent-primary)', borderWidth: '6px' }}>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-14 h-14 flex items-center justify-center bg-black border-4 border-black">
@@ -119,7 +123,7 @@ export default function HelpPage() {
 
 
         {/* ═══ HOW IT WORKS — STEP BY STEP ═══ */}
-        <section className="mb-20 animate-fade-in-up animate-delay-100">
+        <section className="mb-12 animate-fade-in-up animate-delay-100">
           <h2 className="text-3xl font-black font-display uppercase text-black mb-2 flex items-center gap-3">
             <Sparkles className="w-7 h-7" /> How It Works
           </h2>
@@ -210,7 +214,7 @@ export default function HelpPage() {
 
 
         {/* ═══ HOW TO STAKE ═══ */}
-        <section className="mb-20 animate-fade-in-up animate-delay-150">
+        <section className="mb-12 animate-fade-in-up animate-delay-150">
           <h2 className="text-3xl font-black font-display uppercase text-black mb-2 flex items-center gap-3">
             <Coins className="w-7 h-7" /> Staking & Rewards
           </h2>
@@ -269,7 +273,7 @@ export default function HelpPage() {
 
 
         {/* ═══ FEATURES EXPLAINED ═══ */}
-        <section className="mb-20 animate-fade-in-up animate-delay-200">
+        <section className="mb-12 animate-fade-in-up animate-delay-200">
           <h2 className="text-3xl font-black font-display uppercase text-black mb-2 flex items-center gap-3">
             <Zap className="w-7 h-7" /> Key Features
           </h2>
@@ -342,7 +346,7 @@ export default function HelpPage() {
 
 
         {/* ═══ HOW THE MATH WORKS ═══ */}
-        <section className="mb-20 animate-fade-in-up animate-delay-300">
+        <section className="mb-12 animate-fade-in-up animate-delay-300">
           <h2 className="text-3xl font-black font-display uppercase text-black mb-2 flex items-center gap-3">
             <Calculator className="w-7 h-7" /> How the Math Works
           </h2>
@@ -400,7 +404,7 @@ export default function HelpPage() {
 
 
         {/* ═══ FAQ ACCORDION ═══ */}
-        <section className="mb-20 animate-fade-in-up animate-delay-400">
+        <section className="mb-12 animate-fade-in-up animate-delay-400">
           <h2 className="text-3xl font-black font-display uppercase text-black mb-2 flex items-center gap-3">
             <HelpCircle className="w-7 h-7" /> Frequently Asked Questions
           </h2>
@@ -446,7 +450,7 @@ export default function HelpPage() {
 
 
         {/* ═══ GLOSSARY ═══ */}
-        <section className="mb-20 animate-fade-in-up animate-delay-500">
+        <section className="mb-12 animate-fade-in-up animate-delay-500">
           <h2 className="text-3xl font-black font-display uppercase text-black mb-2 flex items-center gap-3">
             <Globe className="w-7 h-7" /> DeFi Glossary
           </h2>
@@ -476,7 +480,7 @@ export default function HelpPage() {
 
 
         {/* ═══ STARKZAP SDK INTEGRATION ═══ */}
-        <section className="mb-20 animate-fade-in-up">
+        <section className="mb-12 animate-fade-in-up">
           <h2 className="text-3xl font-black font-display uppercase text-black mb-2 flex items-center gap-3">
             <Zap className="w-7 h-7" /> Starkzap SDK Integration
           </h2>

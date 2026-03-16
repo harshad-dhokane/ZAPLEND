@@ -45,9 +45,9 @@ export default function BorrowPage() {
     <main className="min-h-screen">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 md:px-8 pt-12 pb-24">
-        <div className="mb-8 animate-fade-in-up">
-          <h1 className="text-3xl md:text-4xl font-black font-display uppercase mb-2 text-black">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 pt-8 pb-8">
+        <div className="mb-4 animate-fade-in-up">
+          <h1 className="text-3xl md:text-4xl font-black font-display uppercase mb-1 text-black">
             Create a <span className="gradient-text">Loan Request</span>
           </h1>
           <p className="text-base font-bold text-black">
@@ -82,7 +82,7 @@ export default function BorrowPage() {
         ) : (
           <>
             {/* Balance Banner */}
-            <div className="neo-card p-4 flex items-center justify-between animate-fade-in-up mb-8 hover-glow">
+            <div className="neo-card p-3 md:p-4 flex items-center justify-between animate-fade-in-up mb-4 hover-glow">
               <div className="flex items-center gap-3">
                 <Coins className="w-5 h-5" style={{ color: '#22C55E' }} />
                 <div>

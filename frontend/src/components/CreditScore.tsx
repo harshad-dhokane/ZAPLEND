@@ -28,7 +28,7 @@ export function CreditScore({ score, totalLoans, repaidLoans, defaultedLoans }: 
   };
 
   return (
-    <div className="neo-card p-6" style={{ background: '#7C3AED' }}>
+    <div className="neo-card p-6 hover-lift" style={{ background: '#7C3AED' }}>
       <h3 className="text-lg font-black mb-6 uppercase tracking-widest text-white" style={{ textShadow: '2px 2px 0px #000' }}>
         Credit Score
       </h3>

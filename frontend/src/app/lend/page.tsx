@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { LoanCard } from '@/components/LoanCard';
 import { useLoans } from '@/hooks/useLoans';
@@ -10,12 +10,15 @@ import { useStarkzap } from '@/providers/StarkzapProvider';
 import { Search, Loader2, Inbox, ChevronDown, ChevronUp, TrendingUp, Clock, Users, AlertTriangle, Share2, Copy, Check, Coins, Shield, Zap, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { Pagination } from '@/components/Pagination';
+import { useContractLogs } from '@/hooks/useContractLogs';
+import { formatDateShort, formatTimestamp } from '@/lib/time';
 
 export default function LendPage() {
   const { data: loans, isLoading } = useLoans();
   const { vouch, isLoading: isVouching } = useVouch();
   const { liquidate, isLoading: isLiquidating } = useLiquidate();
   const { isConnected, address, username } = useStarkzap();
+  const { data: contractLogs } = useContractLogs();
   const [filter, setFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [vouchingLoanId, setVouchingLoanId] = useState<string | null>(null);
@@ -24,7 +27,7 @@ export default function LendPage() {
   const [expandedLoanId, setExpandedLoanId] = useState<string | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 10;
+  const ITEMS_PER_PAGE = 20;
 
   const toggleExpand = (id: string) => {
     setExpandedLoanId(expandedLoanId === id ? null : id);
@@ -38,6 +41,21 @@ export default function LendPage() {
 
   const totalPages = Math.ceil((filteredLoans?.length || 0) / ITEMS_PER_PAGE);
   const paginatedLoans = filteredLoans?.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  const loanCreatedAt = useMemo(() => {
+    const map = new Map<string, number | null>();
+    if (!contractLogs) return map;
+    for (const log of contractLogs) {
+      if (log.type === 'LoanCreated' && log.data?.loanId) {
+        const loanId = String(log.data.loanId);
+        if (!map.has(loanId)) {
+          map.set(loanId, log.timestamp ?? null);
+        }
+      }
+    }
+    return map;
+  }, [contractLogs]);
+  const getLoanDate = (loanId: string) => formatDateShort(loanCreatedAt.get(loanId) ?? null);
+  const getLoanDateFull = (loanId: string) => formatTimestamp(loanCreatedAt.get(loanId) ?? null);
 
   const filterOptions = [
     { value: 'all', label: 'All Loans' },
@@ -65,9 +83,9 @@ export default function LendPage() {
     <main className="min-h-screen">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-3 md:px-8 pt-8 md:pt-12 pb-24">
+      <div className="max-w-7xl mx-auto px-3 md:px-8 pt-8 pb-4 flex flex-col" style={{ minHeight: 'calc(100vh - 4rem)', maxHeight: 'calc(100vh - 4rem)', overflow: 'hidden' }}>
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 md:gap-6 mb-6 md:mb-8 animate-fade-in-up">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 md:gap-4 mb-3 md:mb-4 animate-fade-in-up">
           <div>
             <h1 className="text-3xl md:text-4xl font-black font-display uppercase mb-1 md:mb-2 text-black">
               Loan <span className="gradient-text">Marketplace</span>
@@ -88,7 +106,7 @@ export default function LendPage() {
         </div>
 
         {/* Controls */}
-        <div className="flex flex-col md:flex-row items-center gap-4 mb-6 md:mb-8 animate-fade-in-up animate-delay-100 w-full relative z-40">
+        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-3 md:mb-4 animate-fade-in-up animate-delay-100 w-full relative z-40">
           <div className="flex flex-row items-center w-full md:w-auto gap-2 sm:gap-4 md:flex-1 relative z-50">
             {/* Search Bar */}
             <div className="relative flex-1">
@@ -168,76 +186,94 @@ export default function LendPage() {
 
         {/* Loading Skeletons */}
         {isLoading ? (
-          <div className="flex flex-col gap-3 animate-fade-in-up">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="neo-card p-4 sm:px-6">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <div className="flex-1 flex items-center gap-3">
-                    <div className="skeleton h-6 w-10" />
-                    <div className="skeleton h-5 w-24" />
-                  </div>
-                  <div className="flex items-center gap-6">
-                    <div className="skeleton h-6 w-20 hidden sm:block" />
-                    <div className="skeleton h-6 w-16" />
-                  </div>
-                </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 animate-fade-in-up flex-1">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="neo-card p-5">
+                <div className="skeleton h-6 w-16 mb-3" />
+                <div className="skeleton h-5 w-24 mb-2" />
+                <div className="skeleton h-4 w-20" />
               </div>
             ))}
           </div>
         ) : filteredLoans && filteredLoans.length > 0 ? (
-          <div className="flex flex-col gap-3 animate-fade-in-up animate-delay-200">
-            {paginatedLoans?.map((loan, idx) => {
-              const isMine = address && loan.borrower.toLowerCase() === address.toLowerCase();
-              const derivedUsername = isMine && username 
-                ? username 
-                : (loan.borrower ? `ZapUser_${loan.borrower.slice(2, 6)}` : 'Unknown');
-              const cardBg = idx % 3 === 0 ? '#FFD500' : idx % 3 === 1 ? '#00F5D4' : '#B8B0FF';
-              return (
-              <div 
-                  key={loan.id} 
-                  className="neo-card p-2.5 sm:p-4 sm:px-6 cursor-pointer"
-                  style={{ background: cardBg }}
-                  onClick={() => setExpandedLoanId(loan.id)}
-                >
-                  <div className="flex flex-row items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 shrink">
-                      <h3 className="text-sm sm:text-lg font-black text-black whitespace-nowrap">#{loan.id}</h3>
-                      <p className="text-[9px] sm:text-xs font-bold font-mono text-black bg-yellow-300 px-1.5 py-0.5 border border-black sm:border-2 truncate max-w-[80px] sm:max-w-none">
-                        {derivedUsername}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1.5 sm:gap-4 shrink-0">
-                      <div className="text-right hidden sm:block">
-                        <p className="text-lg font-black text-black">{loan.amount} STRK</p>
+          <div className="flex flex-col flex-1 overflow-hidden">
+            <div className="border-t-2 border-black pt-3"></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 flex-1 content-start auto-rows-min overflow-y-auto">
+              {paginatedLoans?.map((loan, idx) => {
+                const isMine = address && loan.borrower.toLowerCase() === address.toLowerCase();
+                const derivedUsername = isMine && username 
+                  ? username 
+                  : (loan.borrower ? `ZapUser_${loan.borrower.slice(2, 6)}` : 'Unknown');
+                const statusColors: Record<string, string> = {
+                  Active: '#00F5D4', Pending: '#FFD500', Repaid: '#22C55E', Defaulted: '#FF3366',
+                };
+                const cardBg = statusColors[loan.status] || '#FFD500';
+                const isDark = ['#FF3366', '#22C55E'].includes(cardBg);
+                const tc = isDark ? '#fff' : '#000';
+                return (
+                  <div 
+                    key={loan.id} 
+                    className="neo-card p-5 cursor-pointer hover-lift group"
+                    style={{ background: cardBg }}
+                    onClick={() => setExpandedLoanId(loan.id)}
+                  >
+                    {/* Top row: ID badge + status */}
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 flex items-center justify-center bg-yellow-300 border-2 border-black font-black text-sm shrink-0"
+                        style={{ boxShadow: '3px 3px 0px #000' }}>
+                        #{loan.id}
                       </div>
-                      <span className="px-1.5 py-0.5 sm:px-3 sm:py-1 border border-black sm:border-2 font-bold uppercase text-black text-[9px] sm:text-xs whitespace-nowrap" style={{
-                        background: loan.status === 'Active' ? '#00F5D4' : loan.status === 'Repaid' ? '#22C55E' : loan.status === 'Defaulted' ? '#FF3366' : '#FFD500',
-                        color: loan.status === 'Defaulted' ? '#fff' : '#000',
-                      }}>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-lg font-black truncate" style={{ color: tc }}>{loan.amount} STRK</p>
+                        <p className="text-xs font-mono truncate" style={{ color: tc, opacity: 0.7 }}>
+                          {loan.borrower.slice(0, 10)}...{loan.borrower.slice(-4)}
+                        </p>
+                      </div>
+                      <span className="px-2 py-1 border-2 border-black font-black uppercase text-[10px] bg-white text-black whitespace-nowrap shrink-0"
+                        style={{ boxShadow: '2px 2px 0px #000' }}>
                         {loan.status}
                       </span>
-                      <Link
-                        href={`/loan/${loan.id}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex items-center p-1 sm:px-2 sm:py-1 text-xs font-bold border border-black sm:border-2 bg-white hover:bg-yellow-200 transition-colors"
-                        title="Share / View Details"
-                      >
-                        <Share2 className="w-3 h-3" />
-                      </Link>
                     </div>
+
+                    {/* Info row */}
+                    <div className="flex items-center gap-3 mb-2 flex-wrap sm:flex-nowrap">
+                      <span className="text-xs font-bold px-2 py-1 border-2 border-black bg-white/80 text-black uppercase">
+                        {loan.duration}D • {loan.interestRate}%
+                      </span>
+                      <span className="text-xs font-bold" style={{ color: tc, opacity: 0.7 }}>
+                        {derivedUsername}
+                      </span>
+                      <span className="text-xs font-bold min-w-[90px] text-center sm:ml-auto" style={{ color: tc, opacity: 0.7 }} title={getLoanDateFull(loan.id)}>
+                        {getLoanDate(loan.id)}
+                      </span>
+                    </div>
+
+                    {/* Action button */}
+                    <Link
+                      href={`/loan/${loan.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-2 px-3 py-1.5 bg-black/10 border-2 border-black/20 text-sm font-bold uppercase group-hover:bg-black/20 transition-colors"
+                      style={{ color: tc }}
+                    >
+                      <TrendingUp className="w-3.5 h-3.5" />
+                      <span className="text-xs font-bold uppercase">View Details →</span>
+                    </Link>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
             
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
+            {/* Pagination — fixed to bottom */}
+            <div className="mt-auto pt-3 border-t-2 border-black">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={Math.max(1, totalPages)}
+                onPageChange={setCurrentPage}
+              />
+            </div>
           </div>
         ) : (
-          <div className="neo-card p-12 text-center animate-fade-in-up animate-delay-200">
+          <div className="neo-card p-12 text-center animate-fade-in-up animate-delay-200 flex-1 flex flex-col items-center justify-center">
             <Inbox className="w-12 h-12 mx-auto mb-4 text-black" />
             <h3 className="text-lg font-black mb-2 text-black uppercase">
               {loans?.length === 0 ? 'NO LOANS ON-CHAIN YET' : 'NO MATCHING LOANS'}
@@ -294,14 +330,17 @@ export default function LendPage() {
                     <h2 className="text-3xl font-black font-display uppercase" style={{ color: tc }}>
                       Loan #{activeLoan.id}
                     </h2>
-                    <div className="flex flex-wrap items-center gap-2 mt-2">
-                      <span className="text-sm font-bold font-mono px-2 py-0.5 border-2 border-black bg-white text-black">
-                        {derivedUsernameModal}
-                      </span>
-                      <span className="text-xs font-mono" style={{ color: tc, opacity: 0.7 }}>
-                        {activeLoan.borrower.slice(0, 10)}...{activeLoan.borrower.slice(-6)}
-                      </span>
-                    </div>
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                    <span className="text-sm font-bold font-mono px-2 py-0.5 border-2 border-black bg-white text-black">
+                      {derivedUsernameModal}
+                    </span>
+                    <span className="text-xs font-mono" style={{ color: tc, opacity: 0.7 }}>
+                      {activeLoan.borrower.slice(0, 10)}...{activeLoan.borrower.slice(-6)}
+                    </span>
+                    <span className="text-xs font-bold" style={{ color: tc, opacity: 0.7 }} title={getLoanDateFull(activeLoan.id)}>
+                      Created {getLoanDate(activeLoan.id)}
+                    </span>
+                  </div>
                   </div>
 
                   {/* ── Stats Grid ── */}
@@ -360,16 +399,19 @@ export default function LendPage() {
                         <button
                           onClick={() => handleVouchClick(activeLoan.id)}
                           disabled={isVouching && vouchingLoanId === activeLoan.id}
-                          className="w-full py-4 text-base font-black uppercase border-3 border-black transition-all hover:-translate-y-1 flex items-center justify-center gap-2"
+                          className="w-full py-4 text-sm md:text-base font-black uppercase border-3 border-black transition-all hover:-translate-y-1 flex flex-col items-center justify-center gap-1"
                           style={{
                             background: (isVouching && vouchingLoanId === activeLoan.id) ? '#ccc' : '#FFD500',
                             boxShadow: '4px 4px 0px #000',
                             opacity: (isVouching && vouchingLoanId === activeLoan.id) ? 0.6 : 1,
                           }}
                         >
-                          <Zap className="w-5 h-5" />
-                          {(isVouching && vouchingLoanId === activeLoan.id) ? 'Processing...' : 'VOUCH FOR THIS LOAN'}
-                          <span className="ml-1 text-[10px] font-bold px-2 py-0.5 bg-green-400 border border-black">GASLESS ⚡</span>
+                          <div className="flex items-center gap-2">
+                            <Zap className="w-5 h-5" />
+                            {(isVouching && vouchingLoanId === activeLoan.id) ? 'Processing...' : 'VOUCH FOR THIS LOAN'}
+                            <span className="ml-1 text-[10px] font-bold px-2 py-0.5 bg-green-400 border border-black hidden sm:inline-block">GASLESS ⚡</span>
+                          </div>
+                          <span className="text-[10px] sm:text-xs tracking-wider opacity-80">(Earn {activeLoan.interestRate}% Interest Yield)</span>
                         </button>
                       )}
 

@@ -9,16 +9,16 @@ export default function LogsPage() {
     <main className="min-h-screen">
       <Navbar />
 
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 pt-12 pb-24">
+      <div className="max-w-7xl mx-auto px-3 md:px-8 pt-8 pb-8">
         {/* Header */}
-        <div className="mb-10 animate-fade-in-up">
-          <div className="flex items-center gap-3 mb-2">
-            <Database className="w-8 h-8 text-black" />
-            <h1 className="text-3xl md:text-4xl font-black font-display uppercase text-black">
+        <div className="mb-4 animate-fade-in-up">
+          <div className="flex items-center gap-2 mb-1">
+            <Database className="w-6 h-6 md:w-8 md:h-8 text-black" />
+            <h1 className="text-2xl md:text-4xl font-black font-display uppercase text-black">
               Contract <span className="gradient-text">Logs</span>
             </h1>
           </div>
-          <p className="text-base font-bold text-black mb-6">
+          <p className="text-sm md:text-base font-bold text-black mb-4">
             100% genuine real-time raw event logs directly from the ZapLend smart contract on Starknet Sepolia.
           </p>
         </div>

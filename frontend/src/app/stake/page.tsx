@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { useStarkzap } from '@/providers/StarkzapProvider';
-import { useStakingPosition, useStakingActions } from '@/hooks/useStaking';
+import { useStakingPosition, useStakingActions, useAllStakingPositions, addSavedPool, getSavedPools } from '@/hooks/useStaking';
 import { useBalance } from '@/hooks/useBalance';
 import {
   Coins, TrendingUp, Shield, Loader2, Zap, Gift, ArrowDownToLine,
@@ -45,14 +45,29 @@ export default function StakePage() {
   const [isLoadingPools, setIsLoadingPools] = useState(false);
   const [poolError, setPoolError] = useState<string | null>(null);
 
-  // Active pool for staking actions
-  const [activePool, setActivePool] = useState<string | null>(null);
-  const [activePoolDecimals, setActivePoolDecimals] = useState<number>(18);
+  // Active pool for staking actions (selected from My Position list)
+  const [activePool, setActivePool] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      try { return sessionStorage.getItem('zaplend_active_pool'); } catch { return null; }
+    }
+    return null;
+  });
+  const [activePoolDecimals, setActivePoolDecimals] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      try { return parseInt(sessionStorage.getItem('zaplend_active_pool_decimals') || '18'); } catch { return 18; }
+    }
+    return 18;
+  });
   const [stakeAmount, setStakeAmount] = useState('');
   const [unstakeAmount, setUnstakeAmount] = useState('');
   const [showStakeModal, setShowStakeModal] = useState(false);
   const [showUnstakeModal, setShowUnstakeModal] = useState(false);
-  const [activeTab, setActiveTab] = useState<'pools' | 'position'>('pools');
+  const [activeTab, setActiveTab] = useState<'pools' | 'position'>(() => {
+    if (typeof window !== 'undefined') {
+      try { return getSavedPools().length > 0 ? 'position' as const : 'pools' as const; } catch { return 'pools' as const; }
+    }
+    return 'pools' as const;
+  });
 
   // Inline staking within the validator popup
   const [inlineStakePool, setInlineStakePool] = useState<StakingPool | null>(null);
@@ -63,7 +78,18 @@ export default function StakePage() {
 
   // Staking hooks
   const { data: stakingPosition, isLoading: isLoadingPosition } = useStakingPosition(activePool);
+  const { data: allPositions, isLoading: isLoadingAllPositions } = useAllStakingPositions();
   const { stake, claimRewards, exitPoolIntent, exitPool, isLoading: isStakingLoading } = useStakingActions();
+
+  // Persist active pool to sessionStorage whenever it changes
+  useEffect(() => {
+    try {
+      if (activePool) {
+        sessionStorage.setItem('zaplend_active_pool', activePool);
+        sessionStorage.setItem('zaplend_active_pool_decimals', String(activePoolDecimals));
+      }
+    } catch {}
+  }, [activePool, activePoolDecimals]);
 
   // Load SDK, validators, and staking tokens from SDK presets
   useEffect(() => {
@@ -172,9 +198,12 @@ export default function StakePage() {
     if (result) {
       setInlineStakeAmount('');
       setInlineStakePool(null);
+      // Save to multi-pool list
+      addSavedPool(inlineStakePool.poolContract, inlineStakePool.token.decimals, inlineStakePool.validatorName);
       setActivePool(inlineStakePool.poolContract);
       setActivePoolDecimals(inlineStakePool.token.decimals);
       setShowValidatorModal(false);
+      setActiveTab('position'); // Auto-switch to My Position tab
     }
   };
 
@@ -211,7 +240,7 @@ export default function StakePage() {
     <main className="min-h-screen">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-3 md:px-8 pt-8 md:pt-12 pb-24">
+      <div className="max-w-7xl mx-auto px-3 md:px-8 pt-8 pb-24">
         {/* Header */}
         <div className="mb-8 animate-fade-in-up">
           <h1 className="text-3xl md:text-4xl font-black font-display uppercase mb-2 text-black">
@@ -242,7 +271,7 @@ export default function StakePage() {
             className={`px-5 py-2.5 text-sm font-black uppercase border-3 border-black transition-all ${
               activeTab === 'pools'
                 ? 'bg-[#FFD500] shadow-[4px_4px_0px_#000] -translate-y-0.5'
-                : 'bg-gray-100 hover:bg-gray-200'
+                : 'bg-gray-100 hover:bg-gray-200 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000]'
             }`}
           >
             <Shield className="w-4 h-4 inline mr-1.5" /> Explore Pools
@@ -252,7 +281,7 @@ export default function StakePage() {
             className={`px-5 py-2.5 text-sm font-black uppercase border-3 border-black transition-all ${
               activeTab === 'position'
                 ? 'bg-[#00F5D4] shadow-[4px_4px_0px_#000] -translate-y-0.5'
-                : 'bg-gray-100 hover:bg-gray-200'
+                : 'bg-gray-100 hover:bg-gray-200 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000]'
             }`}
           >
             <TrendingUp className="w-4 h-4 inline mr-1.5" /> My Position
@@ -358,10 +387,99 @@ export default function StakePage() {
                 <p className="text-xl font-black text-black mb-2">Connect Wallet</p>
                 <p className="text-sm font-bold text-black">Connect your wallet to view your staking positions.</p>
               </div>
-            ) : !activePool ? (
+            ) : isLoadingAllPositions ? (
+              <div className="flex justify-center py-16">
+                <Loader2 className="w-10 h-10 animate-spin text-black" />
+              </div>
+            ) : allPositions && allPositions.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                {allPositions.map((pos, idx) => {
+                  const isSelected = activePool === pos.poolAddress;
+                  const bgColors = ['#FFD500', '#00F5D4', '#5A4BFF', '#F72585', '#7B61FF'];
+                  const bg = bgColors[idx % bgColors.length];
+                  const isDark = ['#5A4BFF', '#F72585', '#7B61FF'].includes(bg);
+                  const tc = isDark ? '#fff' : '#000';
+                  const badgeText = (pos.validatorName || 'VP').slice(0, 2).toUpperCase();
+
+                  return (
+                    <div
+                      key={pos.poolAddress}
+                      className="neo-card p-5 hover-lift"
+                      style={{ background: bg, border: isSelected ? '4px solid #000' : undefined }}
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <div
+                          className="w-10 h-10 flex items-center justify-center bg-yellow-300 border-2 border-black font-black text-sm shrink-0"
+                          style={{ boxShadow: '3px 3px 0px #000' }}
+                        >
+                          {badgeText}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-lg font-black truncate" style={{ color: tc }}>
+                            {pos.validatorName || 'Unknown Validator'}
+                          </p>
+                          <p className="text-xs font-mono truncate" style={{ color: tc, opacity: 0.7 }}>
+                            {pos.poolAddress.slice(0, 10)}...{pos.poolAddress.slice(-6)}
+                          </p>
+                        </div>
+                        <span
+                          className="px-2 py-1 border-2 border-black font-black uppercase text-[10px] bg-white text-black whitespace-nowrap shrink-0"
+                          style={{ boxShadow: '2px 2px 0px #000' }}
+                        >
+                          {isSelected ? 'Selected' : 'Active'}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-black uppercase" style={{ color: tc, opacity: 0.6 }}>Staked</p>
+                          <p className="text-sm font-black truncate" style={{ color: tc }} title={pos.staked}>{pos.staked}</p>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-black uppercase" style={{ color: tc, opacity: 0.6 }}>Rewards</p>
+                          <p className="text-sm font-black truncate" style={{ color: tc }} title={pos.rewards}>{pos.rewards}</p>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-black uppercase" style={{ color: tc, opacity: 0.6 }}>Total</p>
+                          <p className="text-sm font-black truncate" style={{ color: tc }} title={pos.total}>{pos.total}</p>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-black uppercase" style={{ color: tc, opacity: 0.6 }}>Commission</p>
+                          <p className="text-sm font-black" style={{ color: tc }}>{pos.commissionPercent}%</p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          onClick={() => { setActivePool(pos.poolAddress); setActivePoolDecimals(pos.decimals); setShowStakeModal(true); }}
+                          disabled={isStakingLoading}
+                          className="px-3 py-1.5 text-[10px] font-black uppercase border-2 border-black bg-white text-black shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 transition-all disabled:opacity-50"
+                        >
+                          <ArrowDownToLine className="w-3 h-3 inline mr-1" />Stake
+                        </button>
+                        <button
+                          onClick={() => { setActivePool(pos.poolAddress); setActivePoolDecimals(pos.decimals); claimRewards(pos.poolAddress); }}
+                          disabled={isStakingLoading || pos.rewards === '0' || pos.rewards === '0 STRK'}
+                          className="px-3 py-1.5 text-[10px] font-black uppercase border-2 border-black bg-white text-black shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 transition-all disabled:opacity-50"
+                        >
+                          <Gift className="w-3 h-3 inline mr-1" />Claim
+                        </button>
+                        <button
+                          onClick={() => { setActivePool(pos.poolAddress); setActivePoolDecimals(pos.decimals); setShowUnstakeModal(true); }}
+                          disabled={isStakingLoading}
+                          className="px-3 py-1.5 text-[10px] font-black uppercase border-2 border-black bg-white text-black shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 transition-all disabled:opacity-50"
+                        >
+                          <ArrowUpFromLine className="w-3 h-3 inline mr-1" />Unstake
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
               <div className="neo-card p-10 text-center" style={{ background: '#00F5D4' }}>
                 <Shield className="w-12 h-12 mx-auto mb-4 text-black" />
-                <p className="text-xl font-black text-black mb-2">No Pool Selected</p>
+                <p className="text-xl font-black text-black mb-2">No Positions Yet</p>
                 <p className="text-sm font-bold text-black">
                   Go to &quot;Explore Pools&quot; tab, click a validator, and stake to get started.
                 </p>
@@ -369,133 +487,6 @@ export default function StakePage() {
                   onClick={() => setActiveTab('pools')}
                   className="mt-4 px-5 py-2 bg-[#FFD500] border-3 border-black text-black font-black text-sm uppercase
                     shadow-[3px_3px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
-                >
-                  Explore Pools →
-                </button>
-              </div>
-            ) : isLoadingPosition ? (
-              <div className="flex justify-center py-16">
-                <Loader2 className="w-10 h-10 animate-spin text-black" />
-              </div>
-            ) : stakingPosition ? (
-              <div className="space-y-6">
-                {/* Position Overview Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="neo-card p-5" style={{ background: '#FFD500' }}>
-                    <div className="flex items-center gap-2 mb-2">
-                      <Coins className="w-5 h-5" />
-                      <p className="text-xs font-black uppercase text-black">Staked</p>
-                    </div>
-                    <p className="text-2xl font-black text-black">{stakingPosition.staked}</p>
-                  </div>
-                  <div className="neo-card p-5" style={{ background: '#00F5D4' }}>
-                    <div className="flex items-center gap-2 mb-2">
-                      <Gift className="w-5 h-5" />
-                      <p className="text-xs font-black uppercase text-black">Rewards Earned</p>
-                    </div>
-                    <p className="text-2xl font-black text-black">{stakingPosition.rewards}</p>
-                  </div>
-                  <div className="neo-card p-5" style={{ background: '#5A4BFF' }}>
-                    <div className="flex items-center gap-2 mb-2">
-                      <TrendingUp className="w-5 h-5 text-white" />
-                      <p className="text-xs font-black uppercase text-white">Total Value</p>
-                    </div>
-                    <p className="text-2xl font-black text-white">{stakingPosition.total}</p>
-                  </div>
-                </div>
-
-                {/* Additional Details */}
-                <div className="neo-card p-5" style={{ background: '#F0F0F0' }}>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                      <p className="text-xs font-black uppercase text-gray-600">Commission</p>
-                      <p className="text-lg font-black text-black">{stakingPosition.commissionPercent}%</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-black uppercase text-gray-600">Unpooling</p>
-                      <p className="text-lg font-black text-black">{stakingPosition.unpooling}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-black uppercase text-gray-600">Unpool Time</p>
-                      <p className="text-lg font-black text-black">
-                        {stakingPosition.unpoolTime
-                          ? new Date(stakingPosition.unpoolTime * 1000).toLocaleDateString()
-                          : '—'}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-black uppercase text-gray-600">Pool</p>
-                      <p className="text-sm font-mono font-bold text-black truncate" title={activePool || ''}>
-                        {activePool?.slice(0, 10)}...{activePool?.slice(-6)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <button
-                    onClick={() => setShowStakeModal(true)}
-                    disabled={isStakingLoading}
-                    className="neo-card p-4 text-center hover-lift cursor-pointer disabled:opacity-50"
-                    style={{ background: '#FFD500' }}
-                  >
-                    <ArrowDownToLine className="w-6 h-6 mx-auto mb-2" />
-                    <p className="text-sm font-black uppercase">Stake More</p>
-                  </button>
-
-                  <button
-                    onClick={handleClaimRewards}
-                    disabled={isStakingLoading || stakingPosition.rewards === '0' || stakingPosition.rewards === '0 STRK'}
-                    className="neo-card p-4 text-center hover-lift cursor-pointer disabled:opacity-50"
-                    style={{ background: '#00F5D4' }}
-                  >
-                    {isStakingLoading ? (
-                      <Loader2 className="w-6 h-6 mx-auto mb-2 animate-spin" />
-                    ) : (
-                      <Gift className="w-6 h-6 mx-auto mb-2" />
-                    )}
-                    <p className="text-sm font-black uppercase">Claim Rewards</p>
-                  </button>
-
-                  <button
-                    onClick={() => setShowUnstakeModal(true)}
-                    disabled={isStakingLoading}
-                    className="neo-card p-4 text-center hover-lift cursor-pointer disabled:opacity-50"
-                    style={{ background: '#F72585', color: '#fff' }}
-                  >
-                    <ArrowUpFromLine className="w-6 h-6 mx-auto mb-2 text-white" />
-                    <p className="text-sm font-black uppercase text-white">Unstake</p>
-                  </button>
-
-                  {stakingPosition.unpooling !== '0' && stakingPosition.unpooling !== '0 STRK' && (
-                    <button
-                      onClick={handleExitPool}
-                      disabled={isStakingLoading || (stakingPosition.unpoolTime !== null && Date.now() / 1000 < stakingPosition.unpoolTime)}
-                      className="neo-card p-4 text-center hover-lift cursor-pointer disabled:opacity-50"
-                      style={{ background: '#7B61FF' }}
-                    >
-                      {isStakingLoading ? (
-                        <Loader2 className="w-6 h-6 mx-auto mb-2 animate-spin text-white" />
-                      ) : (
-                        <CheckCircle2 className="w-6 h-6 mx-auto mb-2 text-white" />
-                      )}
-                      <p className="text-sm font-black uppercase text-white">Complete Withdrawal</p>
-                    </button>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="neo-card p-10 text-center" style={{ background: '#FFD500' }}>
-                <Coins className="w-12 h-12 mx-auto mb-4 text-black" />
-                <p className="text-xl font-black text-black mb-2">No Position Yet</p>
-                <p className="text-sm font-bold text-black">
-                  You haven&apos;t staked in this pool yet. Go to &quot;Explore Pools&quot; and click a validator to begin earning rewards.
-                </p>
-                <button
-                  onClick={() => setActiveTab('pools')}
-                  className="mt-4 px-5 py-2 bg-black text-[#FFD500] border-3 border-black font-black text-sm uppercase
-                    shadow-[3px_3px_0px_#555] hover:shadow-[1px_1px_0px_#555] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
                 >
                   Explore Pools →
                 </button>

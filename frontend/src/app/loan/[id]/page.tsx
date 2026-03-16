@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
@@ -9,8 +9,10 @@ import { useVouches } from '@/hooks/useVouches';
 import { useVouch } from '@/hooks/useVouch';
 import { useRepay } from '@/hooks/useRepay';
 import { useLiquidate } from '@/hooks/useLiquidate';
+import { useContractLogs } from '@/hooks/useContractLogs';
 import { useStarkzap } from '@/providers/StarkzapProvider';
 import { ArrowLeft, Copy, Check, Users, Clock, Coins, Shield, ExternalLink, Wallet, Zap, Share2, AlertTriangle, TrendingUp, QrCode } from 'lucide-react';
+import { formatDateShort, formatTimestamp } from '@/lib/time';
 
 export default function LoanDetailPage() {
   const params = useParams();
@@ -21,6 +23,7 @@ export default function LoanDetailPage() {
   const { vouch, isLoading: vouchLoading } = useVouch();
   const { repay, isLoading: repayLoading } = useRepay();
   const { liquidate, isLoading: liquidateLoading } = useLiquidate();
+  const { data: contractLogs } = useContractLogs();
 
   const [vouchAmount, setVouchAmount] = useState('');
   const [repayAmount, setRepayAmount] = useState('');
@@ -28,6 +31,19 @@ export default function LoanDetailPage() {
   const [showQR, setShowQR] = useState(false);
 
   const loan = loans?.find((l) => String(l.id) === String(loanId));
+  const loanCreatedAt = useMemo(() => {
+    const map = new Map<string, number | null>();
+    if (!contractLogs) return map;
+    for (const log of contractLogs) {
+      if (log.type === 'LoanCreated' && log.data?.loanId) {
+        const id = String(log.data.loanId);
+        if (!map.has(id)) map.set(id, log.timestamp ?? null);
+      }
+    }
+    return map;
+  }, [contractLogs]);
+  const createdDate = formatDateShort(loanCreatedAt.get(String(loanId)) ?? null);
+  const createdDateFull = formatTimestamp(loanCreatedAt.get(String(loanId)) ?? null);
 
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/loan/${loanId}` : '';
 
@@ -128,6 +144,9 @@ export default function LoanDetailPage() {
                     </div>
                     <p className="text-sm font-mono font-bold" style={{ color: statusStyle.text, opacity: 0.8 }}>
                       Borrower: {loan.borrower.slice(0, 12)}...{loan.borrower.slice(-6)}
+                    </p>
+                    <p className="text-xs font-bold" style={{ color: statusStyle.text, opacity: 0.85 }} title={createdDateFull}>
+                      Created: {createdDate}
                     </p>
                   </div>
 
@@ -273,6 +292,12 @@ export default function LoanDetailPage() {
                           <div className="text-right">
                             <p className="text-lg font-black text-black">{v.amount}</p>
                             <p className="text-[10px] font-bold text-black uppercase">STRK</p>
+                            <p
+                              className="text-[10px] font-bold text-black uppercase mt-1 bg-white/70 border border-black px-1.5 py-0.5 inline-block"
+                              title={formatTimestamp(v.timestamp ?? null)}
+                            >
+                              {formatDateShort(v.timestamp ?? null)}
+                            </p>
                           </div>
                         </div>
                       ))}

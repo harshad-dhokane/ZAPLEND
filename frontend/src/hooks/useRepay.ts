@@ -6,6 +6,13 @@ import { useToast } from '@/components/Toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { LOAN_CONTRACT_ADDRESS, STRK_TOKEN_ADDRESS, parseStrk } from '@/lib/starknet';
 
+const ENABLE_PREFLIGHT = process.env.NEXT_PUBLIC_ENABLE_PREFLIGHT
+  ? process.env.NEXT_PUBLIC_ENABLE_PREFLIGHT === 'true'
+  : process.env.NODE_ENV === 'production';
+const ENABLE_FEE_ESTIMATE = process.env.NEXT_PUBLIC_ENABLE_FEE_ESTIMATE
+  ? process.env.NEXT_PUBLIC_ENABLE_FEE_ESTIMATE === 'true'
+  : process.env.NODE_ENV === 'production';
+
 export function useRepay() {
   const { wallet } = useStarkzap();
   const { showToast, updateToast } = useToast();
@@ -30,7 +37,7 @@ export function useRepay() {
     const toastId = showToast({
       type: 'loading',
       title: 'Preparing Repayment',
-      message: 'Running preflight checks...',
+      message: ENABLE_PREFLIGHT ? 'Running preflight checks...' : 'Preparing transaction...',
     });
 
     try {
@@ -60,35 +67,45 @@ export function useRepay() {
       if (typeof walletAny.tx === 'function') {
         const builder = walletAny.tx().add(...calls);
 
-        // Preflight check
-        try {
-          const preflight = await builder.preflight();
-          if (!preflight.ok) {
-            const reason = preflight.reason || 'Transaction simulation failed';
-            setError(reason);
-            updateToast(toastId, {
-              type: 'error',
-              title: 'Preflight Failed',
-              message: `Repayment would fail: ${reason}`,
-            });
-            return null;
+        if (ENABLE_PREFLIGHT) {
+          // Preflight check
+          try {
+            const preflight = await builder.preflight();
+            if (!preflight.ok) {
+              const reason = preflight.reason || 'Transaction simulation failed';
+              setError(reason);
+              updateToast(toastId, {
+                type: 'error',
+                title: 'Preflight Failed',
+                message: `Repayment would fail: ${reason}`,
+              });
+              return null;
+            }
+          } catch {
+            console.warn('Preflight check skipped');
           }
-        } catch {
-          console.warn('Preflight check skipped');
         }
 
         // Fee estimation
-        try {
-          const feeEstimate = await builder.estimateFee();
-          const feeStr = feeEstimate?.overall_fee
-            ? `~${(Number(feeEstimate.overall_fee) / 1e18).toFixed(6)} STRK`
-            : 'minimal';
-          updateToast(toastId, {
-            type: 'loading',
-            title: 'Repaying Loan',
-            message: `Repaying ${amount} STRK on Loan #${loanId} (est. fee: ${feeStr})...`,
-          });
-        } catch {
+        if (ENABLE_FEE_ESTIMATE) {
+          try {
+            const feeEstimate = await builder.estimateFee();
+            const feeStr = feeEstimate?.overall_fee
+              ? `~${(Number(feeEstimate.overall_fee) / 1e18).toFixed(6)} STRK`
+              : 'minimal';
+            updateToast(toastId, {
+              type: 'loading',
+              title: 'Repaying Loan',
+              message: `Repaying ${amount} STRK on Loan #${loanId} (est. fee: ${feeStr})...`,
+            });
+          } catch {
+            updateToast(toastId, {
+              type: 'loading',
+              title: 'Repaying Loan',
+              message: `Repaying ${amount} STRK on Loan #${loanId}...`,
+            });
+          }
+        } else {
           updateToast(toastId, {
             type: 'loading',
             title: 'Repaying Loan',

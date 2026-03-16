@@ -33,7 +33,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
   };
 
   return (
-    <div className="flex items-center justify-center gap-1.5 sm:gap-2 mt-6 md:mt-8">
+    <div className="flex items-center justify-center gap-1.5 sm:gap-2">
       {/* Previous */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
