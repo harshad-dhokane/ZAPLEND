@@ -4,7 +4,7 @@
 
 ZapLend re-imagines DeFi peer-to-peer lending by introducing **"Social Collateral."** Borrowers can reduce their required capital by inviting friends to essentially co-sign their loan natively on-chain.
 
-![ZapLend Home](./frontend/public/screenshots/landing.png)
+![ZapLend Home](./frontend/public/screenshots/loan_marketplace.png)
 
 ---
 
@@ -37,19 +37,19 @@ ZapLend features a vibrant, Neo-Brutalism UI that makes complex DeFi interaction
 ### 1. Landing Page
 A bold, eye-catching hero section introducing the concept of Social Collateral lending.
 
-![Landing Page](./frontend/public/screenshots/landing.png)
+![Landing Page](./frontend/public/screenshots/loan_marketplace.png)
 
 ### 2. The Borrow Request
 A user connects their wallet (via Cartridge) and submits a loan request. Normally, they would need 120% collateral. In ZapLend, they can set a **Social Collateral Target**.
 - They put down a baseline deposit.
 - The rest of the required collateral is delegated to their social circle.
 
-![Borrow Page](./frontend/public/screenshots/borrow.png)
+![Borrow Page](./frontend/public/screenshots/dashboard-active_loans.png)
 
 ### 3. Loan Marketplace
 Explore active and pending loans in the marketplace. Filter by status (Active, Pending, Repaid) and search for specific borrowers.
 
-![Marketplace](./frontend/public/screenshots/marketplace.png)
+![Marketplace](./frontend/public/screenshots/loan_marketplace.png)
 
 ### 4. Shareable Vouching
 Each loan has a unique shareable link at `/loan/[id]`. Friends can vouch via:
@@ -57,12 +57,14 @@ Each loan has a unique shareable link at `/loan/[id]`. Friends can vouch via:
 - QR code generation
 - Social media (Twitter, Telegram, WhatsApp)
 
-![Loan Detail with Sharing](./frontend/public/screenshots/logs.png)
+![Loan Detail with Sharing](./frontend/public/screenshots/contract_logs.png)
 
 ### 5. Friends Vouch (Gasless!)
 Friends click **Vouch** and stake their own STRK towards the borrower's goal. Thanks to Starkzap's Paymaster integration, this transaction is completely gasless for the voucher.
 
-![Vouching Interface](./frontend/public/screenshots/help.png)
+✨ **Interest Distribution:** The interest generated from the loan is proportionally distributed among the vouchers who helped fund the social collateral, rewarding them for their trust.
+
+![Vouching Interface](./frontend/public/screenshots/help_center.png)
 
 ### 6. Dashboard & Activity Feed
 Your personal hub for tracking everything:
@@ -71,7 +73,7 @@ Your personal hub for tracking everything:
 - View repayment history
 - Live activity feed showing global protocol events
 
-![Dashboard](./frontend/public/screenshots/dashboard.png)
+![Dashboard](./frontend/public/screenshots/dashboard-overview.png)
 
 ### 7. Analytics & Credit Profile
 A robust Analytics dashboard tracks aggregate platform metrics:
@@ -80,7 +82,7 @@ A robust Analytics dashboard tracks aggregate platform metrics:
 - Top loans by collateral vs repaid value
 - Credit score distribution
 
-![Analytics](./frontend/public/screenshots/analytics.png)
+![Analytics](./frontend/public/screenshots/protocol_analytics.png)
 
 ### 8. STRK Staking (Powered by Starkzap)
 While your STRK waits to be used, stake it directly within ZapLend:
@@ -90,7 +92,7 @@ While your STRK waits to be used, stake it directly within ZapLend:
 - Claim rewards anytime
 - Two-step unstaking with cooldown period
 
-![Staking Page](./frontend/public/screenshots/staking.png)
+![Staking Page](./frontend/public/screenshots/stake.png)
 
 ### 9. Contract Logs (Transparency)
 Real-time event logs directly from the ZapLend smart contract:
@@ -99,7 +101,7 @@ Real-time event logs directly from the ZapLend smart contract:
 - LoanActivated, LoanRepaid, LoanDefaulted
 - Full on-chain transparency
 
-![Contract Logs](./frontend/public/screenshots/logs.png)
+![Contract Logs](./frontend/public/screenshots/contract_logs.png)
 
 ---
 

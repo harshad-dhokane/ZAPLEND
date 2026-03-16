@@ -30,7 +30,7 @@ ZapLend is built on the **Starkzap SDK**, which means you don't need to worry ab
 4. Login using your passkey (Face ID/Fingerprint) or email
 5. Your wallet is now connected!
 
-![Wallet Connection](./frontend/public/screenshots/help.png)
+![Wallet Connection](./frontend/public/screenshots/help_center.png)
 
 ### 1.2 Getting Testnet STRK
 
@@ -75,7 +75,7 @@ Traditional DeFi loans require 120% collateral. With Social Collateral:
    - Your STRK will be deposited as initial collateral
    - Loan enters the marketplace with `Pending` status
 
-![Borrow Page](./frontend/public/screenshots/borrow.png)
+![Borrow Page](./frontend/public/screenshots/dashboard-active_loans.png)
 
 ### 2.3 Sharing Your Loan Request
 
@@ -103,7 +103,7 @@ Once created, your loan gets a unique URL:
    - **Search**: Find loans by borrower address
    - **Sort**: By amount, collateral, or time remaining
 
-![Marketplace](./frontend/public/screenshots/marketplace.png)
+![Marketplace](./frontend/public/screenshots/loan_marketplace.png)
 
 ### 3.2 Vouching for a Friend
 
@@ -115,13 +115,14 @@ When you find a loan you want to support:
    - Your staked STRK acts as collateral for the borrower
    - If they default, your stake is at risk
    - You earn trust/reputation for successful vouches
+   - 💰 **Interest Rewards**: The interest generated from the loan is proportionally distributed among all vouchers based on their staked amount.
 
 4. **Confirm Transaction**:
    - ⚡ **Gasless!** Thanks to Starkzap's Paymaster, you pay 0 gas
    - Transaction processes via Cartridge Controller
    - Your vouch is recorded on-chain
 
-![Vouching](./frontend/public/screenshots/help.png)
+![Vouching](./frontend/public/screenshots/help_center.png)
 
 ### 3.3 Loan Activation
 
@@ -144,7 +145,7 @@ Your [Dashboard](https://zaplend.vercel.app/dashboard) is your personal command 
 - **Active Vouches**: STRK you've staked for others
 - **Credit Score**: Your on-chain reputation (300-1000)
 
-![Dashboard](./frontend/public/screenshots/dashboard.png)
+![Dashboard](./frontend/public/screenshots/dashboard-overview.png)
 
 ### 4.2 Your Loans
 
@@ -194,7 +195,7 @@ ZapLend integrates native STRK staking via the **Starkzap SDK**, allowing you to
 3. **View Pools**: Each validator may have multiple token pools
 4. **Compare Metrics**: Total staked, commission rates
 
-![Staking](./frontend/public/screenshots/staking.png)
+![Staking](./frontend/public/screenshots/stake.png)
 
 ### 5.2 Staking Your STRK
 
@@ -258,7 +259,7 @@ The [Analytics](https://zaplend.vercel.app/analytics) page provides protocol-wid
 - **Total Borrowers**: Unique addresses
 - **Total Vouches**: Social collateral staked
 
-![Analytics](./frontend/public/screenshots/analytics.png)
+![Analytics](./frontend/public/screenshots/protocol_analytics.png)
 
 ### 6.2 Loan Performance
 
@@ -300,6 +301,8 @@ Each log entry shows:
 - **Block Number**: On-chain confirmation
 - **Timestamp**: When event occurred
 - **Event Data**: Loan ID, addresses, amounts
+
+![Contract Logs](./frontend/public/screenshots/contract_logs.png)
 
 ---
 
